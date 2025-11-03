@@ -6,6 +6,19 @@ body {
     overflow-x: hidden;
 }
 
+.logo-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+}
+
+.top-icon {
+    width: 64px;
+    height: 64px;
+    filter: drop-shadow(0 0 5px #f00);
+}
+
 header {
     text-align: center;
     padding: 2em 0;
@@ -20,6 +33,7 @@ nav {
     justify-content: center;
     gap: 2em;
     margin-bottom: 2em;
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -68,6 +82,20 @@ main {
 
 .hidden {
     display: none;
+}
+
+.hidden-menu button {
+    margin-top: 5px;
+    margin-right: 5px;
+    background: #200;
+    color: #f00;
+    border: 1px solid #500;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+.hidden-menu button:hover {
+    background: #400;
 }
 
 @keyframes flicker {
