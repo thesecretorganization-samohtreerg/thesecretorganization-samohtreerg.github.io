@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Organization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>The Organization</header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="missions.html">Missions</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="index.html#hidden">███</a>
+    </nav>
+
+    <main>
+        <section>
+            <p>We’ve been waiting for you. Scroll down. Keep scrolling. You were chosen.</p>
+            <p>There is no turning back now.</p>
+        </section>
+
+        <section>
+            <h2>The Awakening</h2>
+            <p>The work continues beneath the surface. Every day, we get closer to the return.
+                They said it was impossible — they were wrong.</p>
+        </section>
+
+        <section>
+            <h2>Our Records</h2>
+            <p>Fragments of what came before are hidden within the site.
+                Some buttons do nothing. Some reveal too much. Choose carefully.</p>
+            <div class="hidden-menu">
+                <button onclick="revealMessage()">Access File #17</button>
+                <p id="message" class="hidden">Access denied. Clearance insufficient.</p>
+            </div>
+        </section>
+
+        <section id="hidden" class="deep">
+            <h2>Deeper Layers</h2>
+            <p>The page seems endless, but it isn’t. It’s watching how far you’ll go.</p>
+            <p>Keep scrolling...</p>
+            <p>(You shouldn’t be here.)</p>
+        </section>
+    </main>
+
+    <img src="icon.png" class="icon" style="top:10%; left:5%;">
+    <img src="icon.png" class="icon" style="top:60%; left:20%;">
+    <img src="icon.png" class="icon" style="top:30%; right:10%;">
+    <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
+
+    <script>
+        function revealMessage() {
+            const msg = document.getElementById('message');
+            msg.classList.toggle('hidden');
+        }
+    </script>
+</body>
+
+</html>

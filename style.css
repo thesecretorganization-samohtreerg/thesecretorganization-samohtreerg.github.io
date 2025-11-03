@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    background-color: #000;
+    color: #c00;
+    font-family: 'Cinzel', serif;
+    overflow-x: hidden;
+}
+
+header {
+    text-align: center;
+    padding: 2em 0;
+    color: #f00;
+    text-shadow: 0 0 10px #900;
+    font-size: 2em;
+    animation: flicker 3s infinite;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    margin-bottom: 2em;
+}
+
+nav a {
+    color: #a00;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+nav a:hover {
+    color: #f00;
+    text-shadow: 0 0 10px #f00;
+}
+
+main {
+    max-width: 800px;
+    margin: auto;
+    padding: 2em;
+    line-height: 1.6;
+    color: #c33;
+}
+
+.mission {
+    background: rgba(20, 0, 0, 0.7);
+    border: 1px solid #500;
+    border-radius: 8px;
+    padding: 1em;
+    margin-bottom: 1.5em;
+    box-shadow: 0 0 15px #300;
+}
+
+.status {
+    color: #f44;
+    text-shadow: 0 0 5px #f00;
+}
+
+.icon {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+    filter: drop-shadow(0 0 5px #f00);
+    animation: drift 15s infinite ease-in-out alternate;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes flicker {
+
+    0%,
+    19%,
+    21%,
+    23%,
+    25%,
+    54%,
+    56%,
+    100% {
+        opacity: 1;
+    }
+
+    20%,
+    24%,
+    55% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes drift {
+    from {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    to {
+        transform: translate(20px, 40px) rotate(360deg);
+    }
+}
+
+.deep {
+    height: 1200px;
+    color: #900;
+    background: linear-gradient(to bottom, #000 0%, #100 50%, #000 100%);
+}
