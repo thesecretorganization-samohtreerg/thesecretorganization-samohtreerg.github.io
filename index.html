@@ -9,20 +9,64 @@
 </head>
 
 <body>
-    <!-- Top Logo -->
-    <div class="logo-container">
-        <img src="icon.png" alt="Organization Icon" class="top-icon">
-    </div>
-
-    <header>The Organization</header>
-
     <nav>
-        <a href="index.html">Home</a>
-        <a href="missions.html">Missions</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="#" onclick="glitchText(this)">███</a>
+        <div class="nav-start">
+            <div class="top-icon-container">
+                <div class="top-icon-rotation">
+                    <img class="top-icon" src="icon.png" alt="Organization Icon">
+                </div>
+            </div>
+        </div>
+        <div class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="archives.html">Archives</a>
+            <a href="missions.html">Missions</a>
+            <a href="forum.html">Forum</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="#" onclick="glitchText(this)">███</a>
+        </div>
+        <div class="nav-end">
+            <div class="menu-root">
+                <button class="menu-button">Menu ▾</button>
+                <div class="menu-root-items">
+                    <!-- Top Level -->
+                    <div class="menu">
+                        <button class="menu-button">Missions ▾</button>
+                        <div class="menu-items">
+                            <button onclick="location.href='missions.html#op1'">Operation Crimson Veil</button>
+                            <button onclick="location.href='missions.html#op2'">Protocol Black Window</button>
+                            <div class="menu">
+                                <button class="menu-button">Secret Missions ▸</button>
+                                <div class="menu-items">
+                                    <button onclick="location.href='missions.html#secret1'">Redacted File A</button>
+                                    <button onclick="location.href='missions.html#secret2'">Redacted File B</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top Level -->
+                    <div class="menu">
+                        <button class="menu-button">Files ▾</button>
+                        <div class="menu-items">
+                            <button onclick="location.href='secret1.html'">Confidential File 1</button>
+                            <button onclick="location.href='secret2.html'">Confidential File 2</button>
+                            <div class="menu">
+                                <button class="menu-button">Redacted Documents ▸</button>
+                                <div class="menu-items">
+                                    <button onclick="location.href='secret3.html'">Document X</button>
+                                    <button onclick="location.href='secret4.html'">Document Y</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top Level -->
+                </div>
+            </div>
+        </div>
     </nav>
+
+    <h1>The Organization</h1>
 
     <main>
         <section>
@@ -77,6 +121,33 @@
             el.textContent = glitch;
             setTimeout(() => el.textContent = original, 500);
         }
+
+
+
+        const menuButtons = document.querySelectorAll('.menu-button');
+
+        menuButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const menuItems = button.nextElementSibling;
+                if (!menuItems) return;
+
+                // Close other open menus at the same level
+                const container = menuItems.parentElement;
+                const parent = container.parentElement;
+                const siblings = parent.children;
+                for (const sib of siblings) {
+                    const sibItems = sib.querySelector('.menu-items');
+                    if (sibItems !== menuItems) sibItems.style.maxHeight = null;
+                }
+
+                // Toggle current submenu
+                if (menuItems.style.maxHeight) {
+                    menuItems.style.maxHeight = null;
+                } else {
+                    menuItems.style.maxHeight = menuItems.scrollHeight + "px";
+                }
+            });
+        });
     </script>
 </body>
 
