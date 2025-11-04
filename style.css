@@ -18,38 +18,65 @@ button {
     z-index: 1000;
 }
 
-.menu-toggle {
+.menu-item button {
+    cursor: pointer;
+    color: rgb(202, 0, 0);
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    padding: 8px;
+    font-size: 1.1em;
+}
+
+.menu-item button:hover {
+    color: rgb(255, 54, 54);
+    text-shadow: 0 0 10px #f00;
+}
+
+.floating-menu-toggle {
     cursor: pointer;
     color: #a00;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1.2em;
-    transition: color 0.3s, text-shadow 0.3s;
-    background-color: #080808;
+    transition: 0.3s;
     padding: 8px;
+    color: #a00;
+    font-weight: bold;
+    font-size: 1.2em;
 }
 
-.menu-toggle:hover {
+.floating-menu-toggle:hover {
+    color: #f00;
+    text-shadow: 0 0 10px #f00;
     color: #f00;
     text-shadow: 0 0 10px #f00;
 }
 
+.floating-menu-toggle,
+.floating-menu-toggle:hover {
+    border: 0px solid black;
+    background-color: #080808;
+}
+
 .menu {
     overflow-y: hidden;
+    color: #a00;
+    border-left: 3px solid transparent;
     max-height: 0;
-    transition: max-height 0.3s, background-color 0.3s;
-    background-color: #222;
+    transition: 0.3s;
+    background-color: #1b0000;
     list-style-type: none;
     margin: 0;
     padding-left: 10px;
 }
 
-.menu:hover {
-    background-color: #300;
+.menu.open {
+    border-left: 3px solid #800;
 }
 
-.menu-item {
-
+.menu:hover {
+    background-color: rgb(53, 0, 0);
+    border-left: 3px solid #f00;
 }
 
 /* .menu-toggle {
