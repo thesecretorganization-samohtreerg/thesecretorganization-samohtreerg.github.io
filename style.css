@@ -160,31 +160,30 @@ nav a:hover {
 
 /* ===========================
    Floating & Nested Menus
-   Replace previous .menu / .menu-item / .menu-toggle rules
    =========================== */
 
-/* Base menu list (UL). Use for nested lists too. */
 .menu {
     list-style: none;
     margin: 0;
-    padding-left: 0.75rem;
-    /* indent children */
+    padding-left: 0;
+    /* no padding when collapsed */
     background: var(--color-menu-bg);
     overflow: hidden;
     border-left: 3px solid transparent;
     max-height: 0;
-    /* closed by default; JS will set inline maxHeight when opening */
-    transition: max-height var(--transition-speed) ease, border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+    transition:
+        max-height var(--transition-speed) ease,
+        padding var(--transition-speed) ease,
+        border-color var(--transition-speed) ease,
+        background-color var(--transition-speed) ease;
 }
 
-/* When JS adds .open, border tint indicates expansion.
-   We don't set a fixed max-height here because the script sets the exact scrollHeight. */
 .menu.open {
+    padding-left: 0.75rem;
+    /* add padding only when expanded */
     border-left-color: var(--color-accent-dark);
 }
 
-/* Root floating menu container (the one positioned in nav). 
-   Keep it visually separate and allow it to be open initially if desired by adding .open in HTML or via JS. */
 .floating-menu {
     position: absolute;
     right: 10px;
@@ -196,20 +195,7 @@ nav a:hover {
     min-width: 220px;
 }
 
-/* Make immediate child menu visible by default if you want top-level items to show.
-   If you prefer the main menu collapsed at page-load, remove this rule or don't add .open to the element. */
-.floating-menu.open {
-    /* no fixed max-height; open state is controlled by JS by setting style.maxHeight */
-    border-left-color: var(--color-accent-dark);
-}
-
-/* Menu item wrapper */
-.menu-item {
-    margin: 0;
-    padding: 0;
-}
-
-/* Buttons inside menu items (the actual clickable rows). */
+/* Menu item buttons */
 .menu-item>button {
     display: block;
     width: 100%;
@@ -221,11 +207,14 @@ nav a:hover {
     font-weight: bold;
     font-size: 1.05rem;
     cursor: pointer;
-    transition: color var(--transition-speed), text-shadow var(--transition-speed), background-color var(--transition-speed);
+    transition: color var(--transition-speed),
+        text-shadow var(--transition-speed),
+        background-color var(--transition-speed);
     border-radius: 4px;
+    position: relative;
 }
 
-/* Hover/focus state for rows */
+/* Hover/focus */
 .menu-item>button:hover,
 .menu-item>button:focus {
     color: var(--color-accent-hover);
@@ -234,41 +223,35 @@ nav a:hover {
     outline: none;
 }
 
-/* small chevron style for toggles (non-essential, purely visual) */
-.menu-item>button::after {
+/* Show arrow only on buttons that actually have dropdowns */
+.menu-item>button.has-dropdown::after {
     content: "▸";
-    float: right;
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
     transform-origin: center;
     transition: transform var(--transition-speed);
     opacity: 0.85;
 }
 
-/* When the immediate sibling UL is open, rotate chevron */
-.menu-item>button+.menu.open~& {
-    /* fallback - not widely used, keep for clarity */
-}
-
-/* Better selector: when a button's nextElementSibling (a .menu) has .open, rotate the chevron.
-   We can't do that purely in CSS without extra markup, so script toggles a class on the button when opened.
-   To support that, script can toggle .expanded on the button; here's the visual style for .expanded: */
+/* Rotate arrow when expanded */
 .menu-item>button.expanded::after {
-    transform: rotate(90deg);
+    transform: translateY(-50%) rotate(90deg);
 }
 
-/* Nested menu appearance (slightly different background & padding for depth) */
+/* Nested menu visuals */
 .menu .menu {
-    padding-left: 0.75rem;
     background: transparent;
-    /* inherit parent's box so nested lists blend */
 }
 
-/* Hover background for whole list when pointer in it */
+/* Hover border accent */
 .menu:hover {
     background-color: var(--color-menu-hover);
     border-left-color: var(--color-accent-hover);
 }
 
-/* Floating menu toggle button (visible in nav) */
+/* Toggle button for opening floating menu */
 .floating-menu-toggle {
     color: var(--color-accent-dark);
     font-weight: bold;
@@ -276,7 +259,9 @@ nav a:hover {
     font-size: 1.05rem;
     background-color: var(--color-panel-bg);
     border-radius: 4px;
-    transition: color var(--transition-speed), text-shadow var(--transition-speed), background-color var(--transition-speed);
+    transition: color var(--transition-speed),
+        text-shadow var(--transition-speed),
+        background-color var(--transition-speed);
     border: 0;
     cursor: pointer;
 }
@@ -286,7 +271,7 @@ nav a:hover {
     text-shadow: 0 0 10px var(--color-accent-hover);
 }
 
-/* small responsive touch: ensure menus are not too narrow on small viewports */
+/* Responsive tweak */
 @media (max-width: 560px) {
     .floating-menu {
         min-width: 160px;
