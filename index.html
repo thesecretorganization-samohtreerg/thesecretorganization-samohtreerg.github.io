@@ -27,42 +27,44 @@
             <a href="#" onclick="glitchText(this)">███</a>
         </div>
         <div class="nav-end">
-            <div class="menu-root">
-                <button class="menu-button">Menu ▾</button>
-                <div class="menu-root-items">
-                    <!-- Top Level -->
-                    <div class="menu">
-                        <button class="menu-button">Missions ▾</button>
-                        <div class="menu-items">
-                            <button onclick="location.href='missions.html#op1'">Operation Crimson Veil</button>
-                            <button onclick="location.href='missions.html#op2'">Protocol Black Window</button>
-                            <div class="menu">
-                                <button class="menu-button">Secret Missions ▸</button>
-                                <div class="menu-items">
-                                    <button onclick="location.href='missions.html#secret1'">Redacted File A</button>
-                                    <button onclick="location.href='missions.html#secret2'">Redacted File B</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Top Level -->
-                    <div class="menu">
-                        <button class="menu-button">Files ▾</button>
-                        <div class="menu-items">
-                            <button onclick="location.href='secret1.html'">Confidential File 1</button>
-                            <button onclick="location.href='secret2.html'">Confidential File 2</button>
-                            <div class="menu">
-                                <button class="menu-button">Redacted Documents ▸</button>
-                                <div class="menu-items">
-                                    <button onclick="location.href='secret3.html'">Document X</button>
-                                    <button onclick="location.href='secret4.html'">Document Y</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Top Level -->
-                </div>
-            </div>
+            <button class="menu-toggle floating-menu-toggle main-menu-toggle">Menu ▾</button>
+            <ul class="menu floating-menu main-menu">
+                <!-- Top Level -->
+                <li class="menu-item">
+                    <button class="menu-toggle">Missions ▾</button>
+                    <ul class="menu">
+                        <li class="menu-item"><button onclick="location.href='missions.html#op1'">Operation Crimson
+                                Veil</button></li>
+                        <li class="menu-item"><button onclick="location.href='missions.html#op2'">Protocol Black
+                                Window</button></li>
+                        <li class="menu-item">
+                            <button class="menu-toggle">Secret Missions ▸</button>
+                            <ul class="menu">
+                                <li class="menu-item"><button onclick="location.href='missions.html#secret1'">Redacted
+                                        File A</button></li>
+                                <li class="menu-item"><button onclick="location.href='missions.html#secret2'">Redacted
+                                        File B</button></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Top Level -->
+                <li class="menu-item">
+                    <button class="menu-toggle">Files ▾</button>
+                    <ul class="menu">
+                        <li class="menu-item"><button onclick="location.href='secret1.html'">Confidential File 1</button></li>
+                        <li class="menu-item"><button onclick="location.href='secret2.html'">Confidential File 2</button></li>
+                        <li class="menu-item">
+                            <button class="menu-toggle">Redacted Documents ▸</button>
+                            <ul class="menu">
+                                <li class="menu-item"><button onclick="location.href='secret3.html'">Document X</button></li>
+                                <li class="menu-item"><button onclick="location.href='secret4.html'">Document Y</button></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Top Level -->
+            </ul>
         </div>
     </nav>
 
@@ -106,11 +108,6 @@
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
-        function revealMessage() {
-            const msg = document.getElementById('message');
-            msg.classList.toggle('hidden');
-        }
-
         function glitchText(el) {
             const original = el.textContent;
             let glitch = '';
@@ -122,29 +119,39 @@
             setTimeout(() => el.textContent = original, 500);
         }
 
+        // -- Setup Menus --
 
+        function expandMenu(menu) {
+            menu.classList.add('open');
+            menu.style.maxHeight = menu.scrollHeight + 'px';
+            menu.addEventListener('transitionend', () => {
+                menu.style.maxHeight = 'none'; // allow natural height after animation
+            }, { once: true });
+        }
 
-        const menuButtons = document.querySelectorAll('.menu-button');
+        function collapseMenu(menu) {
+            menu.style.maxHeight = menu.scrollHeight + 'px';
+            menu.offsetHeight; // force reflow
+            menu.style.maxHeight = '0';
+            menu.classList.remove('open');
+        }
 
-        menuButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const menuItems = button.nextElementSibling;
-                if (!menuItems) return;
+        const menuToggles = document.querySelectorAll('.menu-toggle');
 
-                // Close other open menus at the same level
-                const container = menuItems.parentElement;
-                const parent = container.parentElement;
-                const siblings = parent.children;
-                for (const sib of siblings) {
-                    const sibItems = sib.querySelector('.menu-items');
-                    if (sibItems !== menuItems) sibItems.style.maxHeight = null;
-                }
-
-                // Toggle current submenu
-                if (menuItems.style.maxHeight) {
-                    menuItems.style.maxHeight = null;
-                } else {
-                    menuItems.style.maxHeight = menuItems.scrollHeight + "px";
+        window.addEventListener('click', (e) => {
+            menuToggles.forEach(toggle => {
+                const menu = toggle.nextElementSibling;
+                if (toggle.contains(e.target)) {
+                    // Clicked button, toggle
+                    const isOpen = menu.classList.contains('open');
+                    if (isOpen) {
+                        collapseMenu(menu);
+                    } else {
+                        expandMenu(menu);
+                    }
+                } else if (!menu.contains(e.target)) {
+                    // Clicked off, collapse
+                    collapseMenu(menu);
                 }
             });
         });
