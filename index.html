@@ -145,11 +145,20 @@
         window.addEventListener('click', (e) => {
             menuToggles.forEach(toggle => {
                 const menu = toggle.nextElementSibling;
+                if (!menu) return;
+
                 if (toggle.contains(e.target)) {
                     const isOpen = menu.classList.contains('open');
-                    isOpen ? collapseMenu(menu) : expandMenu(menu);
-                } else if (menu && !menu.contains(e.target)) {
+                    if (isOpen) {
+                        collapseMenu(menu);
+                        toggle.classList.remove('expanded');
+                    } else {
+                        expandMenu(menu);
+                        toggle.classList.add('expanded');
+                    }
+                } else if (!menu.contains(e.target)) {
                     collapseMenu(menu);
+                    toggle.classList.remove('expanded');
                 }
             });
         });
