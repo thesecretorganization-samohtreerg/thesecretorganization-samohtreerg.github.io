@@ -1,140 +1,110 @@
+/* =========================================
+   Global Styles
+========================================= */
+:root {
+    --color-bg: #000;
+    --color-accent: #c00;
+    --color-accent-hover: #f00;
+    --color-accent-dark: #900;
+    --color-panel-bg: #080808;
+    --color-menu-bg: #1b0000;
+    --color-menu-hover: #350000;
+    --transition-speed: 0.3s;
+    --font-main: serif;
+}
+
 body {
     margin: 0;
-    background-color: #000;
-    color: #c00;
-    font-family: serif;
+    background-color: var(--color-bg);
+    color: var(--color-accent);
+    font-family: var(--font-main);
+}
+
+h1,
+h2 {
+    color: var(--color-accent-hover);
+    text-shadow: 0 0 10px var(--color-accent-dark);
+}
+
+h1 {
+    text-align: center;
+    padding: 2em 0;
+    font-size: 2em;
+    animation: flicker 3s infinite;
+}
+
+main {
+    max-width: 800px;
+    margin: auto;
+    padding: 2em;
+    line-height: 1.6;
+    color: #c33;
 }
 
 button {
-    font-family: serif;
+    font-family: var(--font-main);
     background: none;
     border: none;
-}
-
-/* #region Menu */
-.floating-menu {
-    position: absolute;
-    right: 10px;
-    z-index: 1000;
-}
-
-.menu-item button {
     cursor: pointer;
-    color: rgb(202, 0, 0);
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-    padding: 8px;
-    font-size: 1.1em;
 }
 
-.menu-item button:hover {
-    color: rgb(255, 54, 54);
-    text-shadow: 0 0 10px #f00;
+/* =========================================
+   Utility Classes
+========================================= */
+.hidden {
+    display: none;
 }
 
-.floating-menu-toggle {
-    cursor: pointer;
-    color: #a00;
+.btn {
+    padding: 0.5em 0.75em;
+    border: 1px solid var(--color-accent-dark);
+    background: #200;
+    color: var(--color-accent-hover);
+    transition: background var(--transition-speed), color var(--transition-speed), text-shadow var(--transition-speed);
+}
+
+.btn:hover {
+    background: #400;
+    color: var(--color-accent-hover);
+    text-shadow: 0 0 10px var(--color-accent-hover);
+}
+
+.glow-text {
+    color: var(--color-accent);
+    text-shadow: 0 0 10px var(--color-accent-hover);
+}
+
+/* =========================================
+   Navigation Bar
+========================================= */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 2em;
+    background-color: #111;
+    border-bottom: 1px solid #444;
+}
+
+nav a {
+    color: var(--color-accent-dark);
     text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-    padding: 8px;
-    color: #a00;
     font-weight: bold;
     font-size: 1.2em;
+    background-color: var(--color-panel-bg);
+    padding: 8px;
+    transition: color var(--transition-speed), text-shadow var(--transition-speed);
 }
 
-.floating-menu-toggle:hover {
-    color: #f00;
-    text-shadow: 0 0 10px #f00;
-    color: #f00;
-    text-shadow: 0 0 10px #f00;
+nav a:hover {
+    color: var(--color-accent-hover);
+    text-shadow: 0 0 10px var(--color-accent-hover);
 }
 
-.floating-menu-toggle,
-.floating-menu-toggle:hover {
-    border: 0px solid black;
-    background-color: #080808;
-}
-
-.menu {
-    overflow-y: hidden;
-    color: #a00;
-    border-left: 3px solid transparent;
-    max-height: 0;
-    transition: 0.3s;
-    background-color: #1b0000;
-    list-style-type: none;
-    margin: 0;
-    padding-left: 10px;
-}
-
-.menu.open {
-    border-left: 3px solid #800;
-}
-
-.menu:hover {
-    background-color: rgb(53, 0, 0);
-    border-left: 3px solid #f00;
-}
-
-/* .menu-toggle {
-    color: #c00;
-    text-align: left;
-    font-size: 1.1em;
-    cursor: pointer;
-    padding: 5px 0;
-    transition: 1;
-}
-
-.menu-toggle:hover {
-    color: #f00;
-    text-shadow: 0 0 10px #f00, 0 0 20px #900;
-} */
-
-/* .menu-root-items {
-    position: absolute;
-    transform: translate(0, 30px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.2s ease;
-    margin-left: 10px;
-} */
-
-/* .menu-items {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.2s ease;
-    margin-left: 10px;
-} */
-
-/* .menu-items button {
-    padding-left: 15px;
-    background: none;
-    border: none;
-    color: #c44;
-    cursor: pointer;
-    text-align: left;
-    font-size: 1em;
-    transition: 0.3s;
-}
-
-.menu-items button:hover {
-    color: #f44;
-    text-shadow: 0 0 5px #f00;
-} */
-
-/* #endregion */
-
-/* #region Navigation */
-
-/* #region Icon */
-
+/* =========================================
+   Top Icon Animation
+========================================= */
 .top-icon-container {
     perspective: 200px;
 }
@@ -145,18 +115,17 @@ button {
     display: block;
     transform-style: preserve-3d;
     backface-visibility: hidden;
-    transform-origin: center center;
-    filter: drop-shadow(0 0 5px #f00);
+    filter: drop-shadow(0 0 5px var(--color-accent-hover));
 }
 
 .top-icon-container:hover .top-icon-rotation .top-icon {
-    animation: grow 8s ease 0s 1 forwards;
+    animation: grow 8s ease forwards;
 }
 
 @keyframes grow {
     from {
         transform: scale(1);
-        filter: grayscale(0%) brightness(1) drop-shadow(0 0 5px #f00);
+        filter: grayscale(0%) brightness(1) drop-shadow(0 0 5px var(--color-accent-hover));
     }
 
     to {
@@ -189,44 +158,109 @@ button {
     }
 }
 
-/* #endregion */
-
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 2em;
-    background-color: #111;
-    border-bottom: 1px solid #444;
+/* =========================================
+   Floating Menus
+========================================= */
+.floating-menu {
+    position: absolute;
+    right: 10px;
+    z-index: 1000;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 10px;
+    background-color: var(--color-menu-bg);
+    overflow: hidden;
+    border-left: 3px solid transparent;
+    max-height: 0;
+    transition: max-height var(--transition-speed), border-color var(--transition-speed), background-color var(--transition-speed);
 }
 
-nav a {
-    color: #a00;
-    text-decoration: none;
+.floating-menu.open {
+    border-left-color: var(--color-accent-dark);
+    max-height: 1000px;
+    /* dynamic via JS */
+}
+
+.floating-menu:hover {
+    background-color: var(--color-menu-hover);
+    border-left-color: var(--color-accent-hover);
+}
+
+/* Shared menu toggle style */
+.menu-toggle,
+.floating-menu-toggle {
+    color: var(--color-accent-dark);
     font-weight: bold;
-    font-size: 1.2em;
-    transition: color 0.3s, text-shadow 0.3s;
-    background-color: #080808;
     padding: 8px;
+    font-size: 1.1em;
+    background-color: var(--color-panel-bg);
+    transition: color var(--transition-speed), text-shadow var(--transition-speed);
 }
 
-nav a:hover {
-    color: #f00;
-    text-shadow: 0 0 10px #f00;
+.menu-toggle:hover,
+.floating-menu-toggle:hover {
+    color: var(--color-accent-hover);
+    text-shadow: 0 0 10px var(--color-accent-hover);
 }
 
-/* #endregion */
-
-h1 {
-    text-align: center;
-    padding: 2em 0;
-    color: #f00;
-    text-shadow: 0 0 10px #900;
-    font-size: 2em;
-    animation: flicker 3s infinite;
+/* Menu items */
+.menu-item button {
+    @extend .menu-toggle;
+    text-align: left;
 }
 
+/* =========================================
+   Decorative Icons
+========================================= */
+.icon {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    opacity: 0.3;
+    filter: drop-shadow(0 0 5px var(--color-accent-hover));
+    animation: drift 15s infinite ease-in-out alternate;
+}
+
+@keyframes drift {
+    from {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    to {
+        transform: translate(20px, 40px) rotate(360deg);
+    }
+}
+
+/* =========================================
+   Page Sections
+========================================= */
+.mission {
+    background: rgba(20, 0, 0, 0.7);
+    border: 1px solid #500;
+    border-radius: 8px;
+    padding: 1em;
+    margin-bottom: 1.5em;
+    box-shadow: 0 0 15px #300;
+}
+
+.status {
+    color: #f44;
+    text-shadow: 0 0 5px var(--color-accent-hover);
+}
+
+.hidden-menu button {
+    @extend .btn;
+}
+
+.deep {
+    height: 1200px;
+    color: var(--color-accent-dark);
+    background: linear-gradient(to bottom, #000 0%, #100 50%, #000 100%);
+}
+
+/* =========================================
+   Animations
+========================================= */
 @keyframes flicker {
 
     0%,
@@ -245,69 +279,4 @@ h1 {
     55% {
         opacity: 0.4;
     }
-}
-
-main {
-    max-width: 800px;
-    margin: auto;
-    padding: 2em;
-    line-height: 1.6;
-    color: #c33;
-}
-
-.mission {
-    background: rgba(20, 0, 0, 0.7);
-    border: 1px solid #500;
-    border-radius: 8px;
-    padding: 1em;
-    margin-bottom: 1.5em;
-    box-shadow: 0 0 15px #300;
-}
-
-.status {
-    color: #f44;
-    text-shadow: 0 0 5px #f00;
-}
-
-.icon {
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    opacity: 0.3;
-    filter: drop-shadow(0 0 5px #f00);
-    animation: drift 15s infinite ease-in-out alternate;
-}
-
-.hidden {
-    display: none;
-}
-
-.hidden-menu button {
-    margin-top: 5px;
-    margin-right: 5px;
-    background: #200;
-    color: #f00;
-    border: 1px solid #500;
-    padding: 0.5em;
-    cursor: pointer;
-}
-
-.hidden-menu button:hover {
-    background: #400;
-}
-
-@keyframes drift {
-    from {
-        transform: translate(0, 0) rotate(0deg);
-    }
-
-    to {
-        transform: translate(20px, 40px) rotate(360deg);
-    }
-}
-
-.deep {
-    height: 1200px;
-    color: #900;
-    background: linear-gradient(to bottom, #000 0%, #100 50%, #000 100%);
 }

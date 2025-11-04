@@ -17,6 +17,7 @@
                 </div>
             </div>
         </div>
+
         <div class="nav-center">
             <a href="index.html">Home</a>
             <a href="archives.html">Archives</a>
@@ -24,12 +25,13 @@
             <a href="forum.html">Forum</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
-            <a href="#" onclick="glitchText(this)">███</a>
+            <a href="#" onclick="glitchText(this)" class="glow-text">███</a>
         </div>
+
         <div class="nav-end">
             <button class="menu-toggle floating-menu-toggle main-menu-toggle">Menu ▾</button>
             <ul class="menu floating-menu main-menu">
-                <!-- Top Level -->
+                <!-- Missions -->
                 <li class="menu-item">
                     <button class="menu-toggle">Missions ▾</button>
                     <ul class="menu">
@@ -48,22 +50,26 @@
                         </li>
                     </ul>
                 </li>
-                <!-- Top Level -->
+
+                <!-- Files -->
                 <li class="menu-item">
                     <button class="menu-toggle">Files ▾</button>
                     <ul class="menu">
-                        <li class="menu-item"><button onclick="location.href='secret1.html'">Confidential File 1</button></li>
-                        <li class="menu-item"><button onclick="location.href='secret2.html'">Confidential File 2</button></li>
+                        <li class="menu-item"><button onclick="location.href='secret1.html'">Confidential File
+                                1</button></li>
+                        <li class="menu-item"><button onclick="location.href='secret2.html'">Confidential File
+                                2</button></li>
                         <li class="menu-item">
                             <button class="menu-toggle">Redacted Documents ▸</button>
                             <ul class="menu">
-                                <li class="menu-item"><button onclick="location.href='secret3.html'">Document X</button></li>
-                                <li class="menu-item"><button onclick="location.href='secret4.html'">Document Y</button></li>
+                                <li class="menu-item"><button onclick="location.href='secret3.html'">Document X</button>
+                                </li>
+                                <li class="menu-item"><button onclick="location.href='secret4.html'">Document Y</button>
+                                </li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-                <!-- Top Level -->
             </ul>
         </div>
     </nav>
@@ -80,16 +86,16 @@
             <h2>The Awakening</h2>
             <p>The work continues beneath the surface. Every day, we get closer to the return. They said it was
                 impossible — they were wrong.</p>
-            <button onclick="glitchText(this)">Learn More</button>
+            <button class="btn" onclick="glitchText(this)">Learn More</button>
         </section>
 
         <section>
             <h2>Hidden Files</h2>
             <p>Some buttons do nothing. Some reveal too much. Choose carefully.</p>
             <div class="hidden-menu">
-                <button onclick="revealMessage()">Access File #17</button>
+                <button class="btn" onclick="revealMessage()">Access File #17</button>
                 <p id="message" class="hidden">Access denied. Clearance insufficient.</p>
-                <button onclick="glitchText(this)">???</button>
+                <button class="btn" onclick="glitchText(this)">???</button>
             </div>
         </section>
 
@@ -101,31 +107,29 @@
         </section>
     </main>
 
-    <!-- Floating icons -->
+    <!-- Floating Icons -->
     <img src="icon.png" class="icon" style="top:10%; left:5%;">
     <img src="icon.png" class="icon" style="top:60%; left:20%;">
     <img src="icon.png" class="icon" style="top:30%; right:10%;">
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
+        // Glitch effect
         function glitchText(el) {
             const original = el.textContent;
-            let glitch = '';
             const chars = '█▓▒░0123456789ABCDEF';
-            for (let i = 0; i < original.length; i++) {
-                glitch += chars[Math.floor(Math.random() * chars.length)];
-            }
-            el.textContent = glitch;
+            el.textContent = [...original].map(() =>
+                chars[Math.floor(Math.random() * chars.length)]
+            ).join('');
             setTimeout(() => el.textContent = original, 500);
         }
 
-        // -- Setup Menus --
-
+        // Expand/Collapse Menu
         function expandMenu(menu) {
             menu.classList.add('open');
             menu.style.maxHeight = menu.scrollHeight + 'px';
             menu.addEventListener('transitionend', () => {
-                menu.style.maxHeight = 'none'; // allow natural height after animation
+                menu.style.maxHeight = 'none';
             }, { once: true });
         }
 
@@ -142,19 +146,18 @@
             menuToggles.forEach(toggle => {
                 const menu = toggle.nextElementSibling;
                 if (toggle.contains(e.target)) {
-                    // Clicked button, toggle
                     const isOpen = menu.classList.contains('open');
-                    if (isOpen) {
-                        collapseMenu(menu);
-                    } else {
-                        expandMenu(menu);
-                    }
-                } else if (!menu.contains(e.target)) {
-                    // Clicked off, collapse
+                    isOpen ? collapseMenu(menu) : expandMenu(menu);
+                } else if (menu && !menu.contains(e.target)) {
                     collapseMenu(menu);
                 }
             });
         });
+
+        // Example placeholder for file access
+        function revealMessage() {
+            document.getElementById('message').classList.remove('hidden');
+        }
     </script>
 </body>
 
