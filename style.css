@@ -178,6 +178,7 @@ nav a:hover {
     border-left: 3px solid transparent;
     max-height: 0;
     transition: all var(--transition-speed) ease;
+    font-size: 1rem;
 }
 
 .menu.open {
@@ -188,13 +189,25 @@ nav a:hover {
 
 .floating-menu {
     position: absolute;
-    right: 10px;
     z-index: 1000;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
     background: var(--color-menu-bg);
     /* padding: 0.25rem; */
     border-radius: 6px;
     min-width: 220px;
+}
+
+.floating-menu:not(.upward) {
+    right: 10px;
+}
+
+.floating-menu.upward {
+    bottom: 80px;
+    left: 20px;
+}
+
+*:has(.floating-menu.upward) {
+    position: relative;
 }
 
 /* Menu item buttons */
