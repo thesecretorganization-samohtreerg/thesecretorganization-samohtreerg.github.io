@@ -158,9 +158,9 @@ nav a:hover {
     }
 }
 
-/* ===========================
+/* ==============================
    Floating & Nested Menus
-   =========================== */
+============================== */
 
 .menu {
     list-style: none;
@@ -323,10 +323,16 @@ nav a:hover {
     text-shadow: 0 0 5px var(--color-accent-hover);
 }
 
-.deep {
-    height: 1200px;
-    color: var(--color-accent-dark);
-    background: linear-gradient(to bottom, #000 0%, #100 50%, #000 100%);
+.countdown {
+    text-align: center;
+    margin-top: 2em;
+    font-size: 1.5em;
+    color: var(--color-accent-hover);
+}
+
+.event-triggered {
+    background-color: #300;
+    animation: flicker 1s infinite;
 }
 
 /* =========================================

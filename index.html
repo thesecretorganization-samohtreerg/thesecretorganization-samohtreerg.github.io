@@ -97,6 +97,40 @@
                 Founded in 2009 by the master intelligence, the
             </p>
         </section>
+
+        <section>
+            <h2>Founding and Purpose</h2>
+            <p>
+                Established in <strong>2009</strong> under the vision of <strong>The Founder</strong>, known to some as
+                <em>Nivlac</em>, the Organization was built to correct the decay of modern order. Governments failed to
+                see
+                the fractures forming beneath society. We did not. Our mission is to restore balance—through any means
+                necessary.
+            </p>
+        </section>
+
+        <section>
+            <h2>The Awakening Protocol</h2>
+            <p>
+                The Awakening marks the transition between silence and dominion. Our networks, our operatives, our
+                machines—
+                all converge toward the Event. When the countdown reaches zero, the world will be reset. The unworthy
+                will
+                vanish. The faithful will remain.
+            </p>
+            <div class="countdown">
+                <p><strong>Time Until the Event:</strong></p>
+                <div id="timer" class="glow-text"></div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Designation: The Variable</h2>
+            <p>
+                Intelligence reports indicate an anomaly—a disruptor whose presence threatens the culmination of our
+                operations. The identity of this entity remains unknown. If detected, eliminate at once.
+            </p>
+        </section>
     </main>
 
     <!-- Floating Icons -->
@@ -152,10 +186,30 @@
             });
         });
 
-        // Example placeholder for file access
-        function revealMessage() {
-            document.getElementById('message').classList.remove('hidden');
-        }
+        // Countdown timer to the "Event"
+        const countdownDate = new Date("2025-11-06T18:00:00").getTime(); // change as needed
+        const timerEl = document.getElementById("timer");
+
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            if (distance < 0) {
+                clearInterval(x);
+                timerEl.textContent = "EVENT TRIGGERED";
+                document.body.classList.add("event-triggered");
+            }
+        };
+
+        const x = setInterval(updateTimer, 1000);
+        updateTimer();
     </script>
 </body>
 
