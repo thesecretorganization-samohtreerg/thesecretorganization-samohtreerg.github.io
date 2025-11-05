@@ -197,7 +197,8 @@ nav a:hover {
 }
 
 /* Menu item buttons */
-.menu-item>button {
+.menu-item>button,
+.menu-item>a {
     display: block;
     width: 100%;
     text-align: left;
@@ -217,7 +218,7 @@ nav a:hover {
 
 /* Hover/focus */
 .menu-item>button:hover,
-.menu-item>button:focus {
+.menu-item>a:hover {
     color: var(--color-accent-hover);
     text-shadow: 0 0 8px var(--color-accent-hover);
     background: rgba(255, 0, 0, 0.03);
