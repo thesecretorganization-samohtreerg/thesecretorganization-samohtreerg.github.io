@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Organization</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon.png">
+    <script defer src="menu.js"></script>
 </head>
 
 <body>
@@ -20,26 +22,34 @@
 
         <div class="nav-center">
             <a href="index.html">Home</a>
-            <a href="archives.html">Archives</a>
             <a href="missions.html">Missions</a>
-            <a href="forum.html">Forum</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
         </div>
 
         <div class="nav-end">
-            <button class="menu-toggle floating-menu-toggle main-menu-toggle">Menu ▾</button>
-            <ul class="menu floating-menu main-menu">
+            <button class="menu-toggle floating-menu-toggle">Menu</button>
+            <ul class="menu floating-menu">
+                <!-- Navigation -->
+                <li class="menu-item"><a href="index.html">Home</a></li>
+                <li class="menu-item"><a href="missions.html">Missions</a></li>
+                <li class="menu-item"><a href="archives.html">Archives</a></li>
+                <li class="menu-item"><a href="records.html">Records</a></li>
+                <li class="menu-item"><a href="internal.html">Internal Access</a></li>
+                <li class="menu-item"><a href="about.html">About</a></li>
+                <li class="menu-item"><a href="contact.html">Contact</a></li>
+                <li class="menu-item">Hello</br>kjdfshgiurhuhiushgf</li>
+
                 <!-- Missions -->
                 <li class="menu-item">
-                    <button class="menu-toggle">Missions ▾</button>
+                    <button class="menu-toggle">Missions</button>
                     <ul class="menu">
                         <li class="menu-item"><button onclick="location.href='missions.html#op1'">Operation Crimson
                                 Veil</button></li>
                         <li class="menu-item"><button onclick="location.href='missions.html#op2'">Protocol Black
                                 Window</button></li>
                         <li class="menu-item">
-                            <button class="menu-toggle">Secret Missions ▸</button>
+                            <button class="menu-toggle">Secret Missions</button>
                             <ul class="menu">
                                 <li class="menu-item"><button onclick="location.href='missions.html#secret1'">Redacted
                                         File A</button></li>
@@ -52,7 +62,7 @@
 
                 <!-- Files -->
                 <li class="menu-item">
-                    <button class="menu-toggle">Files ▾</button>
+                    <button class="menu-toggle">Files</button>
                     <ul class="menu">
                         <li class="menu-item"><button onclick="location.href='secret1.html'">Confidential File
                                 1</button></li>
@@ -133,6 +143,12 @@
         </section>
     </main>
 
+    <footer>
+        <h3>The Foundation</h3>
+        <p>Est. 2009 | For Order, For Continuity, For the Future.</p>
+        <p>© The Organization | Internal Use Only</p>
+    </footer>
+
     <!-- Floating Icons -->
     <img src="icon.png" class="icon" style="top:10%; left:5%;">
     <img src="icon.png" class="icon" style="top:60%; left:20%;">
@@ -140,52 +156,6 @@
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
-        // Automatically mark dropdown buttons
-        document.querySelectorAll('.menu-item > button').forEach(btn => {
-            if (btn.nextElementSibling && btn.nextElementSibling.classList.contains('menu')) {
-                btn.classList.add('has-dropdown');
-            }
-        });
-
-        // Expand/Collapse Menu
-        function expandMenu(menu) {
-            menu.classList.add('open');
-            menu.style.maxHeight = menu.scrollHeight + 'px';
-            menu.addEventListener('transitionend', () => {
-                menu.style.maxHeight = 'none';
-            }, { once: true });
-        }
-
-        function collapseMenu(menu) {
-            menu.style.maxHeight = menu.scrollHeight + 'px';
-            menu.offsetHeight; // force reflow
-            menu.style.maxHeight = '0';
-            menu.classList.remove('open');
-        }
-
-        const menuToggles = document.querySelectorAll('.menu-toggle');
-
-        window.addEventListener('click', (e) => {
-            menuToggles.forEach(toggle => {
-                const menu = toggle.nextElementSibling;
-                if (!menu) return;
-
-                if (toggle.contains(e.target)) {
-                    const isOpen = menu.classList.contains('open');
-                    if (isOpen) {
-                        collapseMenu(menu);
-                        toggle.classList.remove('expanded');
-                    } else {
-                        expandMenu(menu);
-                        toggle.classList.add('expanded');
-                    }
-                } else if (!menu.contains(e.target)) {
-                    collapseMenu(menu);
-                    toggle.classList.remove('expanded');
-                }
-            });
-        });
-
         // Countdown timer to the "Event"
         const countdownDate = new Date("2025-11-06T18:00:00").getTime(); // change as needed
         const timerEl = document.getElementById("timer");

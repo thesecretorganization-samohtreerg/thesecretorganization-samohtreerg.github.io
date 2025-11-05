@@ -55,7 +55,8 @@ button {
     display: none;
 }
 
-.btn, .hidden-menu button {
+.btn,
+.hidden-menu button {
     padding: 0.5em 0.75em;
     border: 1px solid var(--color-accent-dark);
     background: #200;
@@ -333,6 +334,18 @@ nav a:hover {
 .event-triggered {
     background-color: #300;
     animation: flicker 1s infinite;
+}
+
+/* =========================================
+   Foooter
+========================================= */
+footer {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #400;
+    background-color: #080000;
+    font-size: 0.8em;
+    color: var(--color-accent-dark);
 }
 
 /* =========================================
