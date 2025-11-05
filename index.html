@@ -25,7 +25,6 @@
             <a href="forum.html">Forum</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
-            <a href="#" onclick="glitchText(this)" class="glow-text">███</a>
         </div>
 
         <div class="nav-end">
@@ -116,16 +115,6 @@
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
-        // Glitch effect
-        function glitchText(el) {
-            const original = el.textContent;
-            const chars = '█▓▒░0123456789ABCDEF';
-            el.textContent = [...original].map(() =>
-                chars[Math.floor(Math.random() * chars.length)]
-            ).join('');
-            setTimeout(() => el.textContent = original, 500);
-        }
-
         // Automatically mark dropdown buttons
         document.querySelectorAll('.menu-item > button').forEach(btn => {
             if (btn.nextElementSibling && btn.nextElementSibling.classList.contains('menu')) {
