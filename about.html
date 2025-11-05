@@ -9,18 +9,9 @@
 </head>
 
 <body>
-    <div class="logo-container">
-        <img src="icon.png" alt="Organization Icon" class="top-icon">
-    </div>
-
-    <header>About Us</header>
 
     <nav>
         <a href="index.html">Home</a>
-        <a href="missions.html">Missions</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
-        <a href="#" onclick="glitchText(this)">???</a>
     </nav>
 
     <main>
@@ -28,7 +19,6 @@
             <h2>Who We Are</h2>
             <p>We are the unseen. The forgotten. The watchers who ensure the balance is kept. Few know of us; fewer
                 survive knowing.</p>
-            <button onclick="glitchText(this)">Reveal More</button>
         </section>
 
         <section>
@@ -40,19 +30,6 @@
 
     <img src="icon.png" class="icon" style="top:25%; left:15%;">
     <img src="icon.png" class="icon" style="bottom:10%; right:20%;">
-
-    <script>
-        function glitchText(el) {
-            const original = el.textContent;
-            let glitch = '';
-            const chars = '█▓▒░0123456789ABCDEF';
-            for (let i = 0; i < original.length; i++) {
-                glitch += chars[Math.floor(Math.random() * chars.length)];
-            }
-            el.textContent = glitch;
-            setTimeout(() => el.textContent = original, 500);
-        }
-    </script>
 </body>
 
 </html>

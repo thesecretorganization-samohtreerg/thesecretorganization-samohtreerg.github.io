@@ -80,12 +80,17 @@ button {
 ========================================= */
 nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 10px;
     margin-bottom: 2em;
     background-color: #111;
     border-bottom: 1px solid #444;
+    min-height: 50px;
+}
+
+nav.multipart {
+    justify-content: space-between;
 }
 
 nav a {
