@@ -290,7 +290,7 @@ nav a:hover {
 .icon {
     position: absolute;
     width: 64px;
-    height: 64px;
+    height: 48px;
     opacity: 0.3;
     filter: drop-shadow(0 0 5px var(--color-accent-hover));
     animation: drift 15s infinite ease-in-out alternate;
