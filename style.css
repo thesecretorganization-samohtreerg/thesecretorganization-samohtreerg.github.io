@@ -172,11 +172,7 @@ nav a:hover {
     overflow: hidden;
     border-left: 3px solid transparent;
     max-height: 0;
-    transition:
-        max-height var(--transition-speed) ease,
-        padding var(--transition-speed) ease,
-        border-color var(--transition-speed) ease,
-        background-color var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease;
 }
 
 .menu.open {
@@ -197,8 +193,9 @@ nav a:hover {
 }
 
 /* Menu item buttons */
-.menu-item>button,
-.menu-item>a {
+.menu-toggle,
+.menu-item>a,
+.menu-item>button {
     display: block;
     width: 100%;
     text-align: left;
@@ -212,21 +209,29 @@ nav a:hover {
     transition: color var(--transition-speed),
         text-shadow var(--transition-speed),
         background-color var(--transition-speed);
-    border-radius: 4px;
     position: relative;
 }
 
+.menu-toggle.base {
+    background: var(--color-menu-bg);
+}
+
 /* Hover/focus */
-.menu-item>button:hover,
-.menu-item>a:hover {
+.menu-toggle:hover,
+.menu-item>a:hover,
+.menu-item>button:hover {
     color: var(--color-accent-hover);
     text-shadow: 0 0 8px var(--color-accent-hover);
     background: rgba(255, 0, 0, 0.03);
     outline: none;
 }
 
+.menu-toggle.base:hover {
+    background: var(--color-menu-hover);
+}
+
 /* Show arrow only on buttons that actually have dropdowns */
-.menu-item>button.has-dropdown::after {
+.menu-toggle::after {
     content: "▸";
     position: absolute;
     right: 0.6rem;
@@ -238,7 +243,7 @@ nav a:hover {
 }
 
 /* Rotate arrow when expanded */
-.menu-item>button.expanded::after {
+.menu-toggle.expanded::after {
     transform: translateY(-50%) rotate(90deg);
 }
 
@@ -266,6 +271,7 @@ nav a:hover {
         background-color var(--transition-speed);
     border: 0;
     cursor: pointer;
+    min-width: 80px;
 }
 
 .floating-menu-toggle:hover {
@@ -296,6 +302,7 @@ nav a:hover {
     opacity: 0.3;
     filter: drop-shadow(0 0 5px var(--color-accent-hover));
     animation: drift 15s infinite ease-in-out alternate;
+    z-index: -1;
 }
 
 @keyframes drift {

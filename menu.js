@@ -1,10 +1,3 @@
-// Automatically mark dropdown buttons
-document.querySelectorAll('.menu-item > button').forEach(btn => {
-    if (btn.nextElementSibling && btn.nextElementSibling.classList.contains('menu')) {
-        btn.classList.add('has-dropdown');
-    }
-});
-
 // Expand/Collapse Menu
 function expandMenu(menu) {
     menu.classList.add('open');
