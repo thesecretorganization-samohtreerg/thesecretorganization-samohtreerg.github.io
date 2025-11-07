@@ -229,6 +229,19 @@
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
+        // Redirect to danger when icon animation goes too long
+        const icons = document.querySelectorAll('.top-icon-container');
+        const scaryBuildup = new Audio('./scary-buildup.wav');
+        icons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                scaryBuildup.play();
+                icon.classList.add('active');
+                setTimeout(() => {
+                    window.location.href = 'danger.html';
+                }, 8000);
+            });
+        });
+
         // Countdown timer to the "Event"
         const countdownDate = new Date('2025-11-06T18:00:00').getTime(); // change as needed
         const timerEl = document.getElementById('timer');

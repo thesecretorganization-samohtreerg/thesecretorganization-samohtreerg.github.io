@@ -124,7 +124,7 @@ nav a:hover {
     filter: drop-shadow(0 0 5px var(--color-accent-hover));
 }
 
-.top-icon-container:hover .top-icon-rotation .top-icon {
+.top-icon-container.active .top-icon-rotation .top-icon {
     animation: grow 8s ease forwards;
 }
 
@@ -140,7 +140,7 @@ nav a:hover {
     }
 }
 
-.top-icon-container:hover .top-icon-rotation {
+.top-icon-container.active .top-icon-rotation {
     animation: spinYEaseIn 8s ease-in, spinY 0.6s linear 8s infinite;
 }
 
