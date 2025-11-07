@@ -15,12 +15,17 @@
         .mission { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
         .mission h3 { margin: 0 0 0.25rem 0; color: var(--color-accent-dark); }
         .mission small { color: rgba(255,255,255,0.6); }
-        .mission .controls { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+        .mission .controls { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }
         .mission .status { font-weight: bold; color: var(--color-accent-dark); }
         .mission .complete { color: #7CFC00; }
         .mission .failed { color: #ff5c5c; }
-        .mission .code-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
-        .mission input.mcode { width: 5.5rem; text-align: center; padding: 0.35rem; font-size: 1.05rem; }
+        .mission .code-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .mission input.mcode { width: 6.2rem; text-align: center; padding: 0.5rem 0.6rem; font-size: 1.05rem; border-radius: 6px; border: 1px solid rgba(255,0,0,0.28); background: rgba(255,255,255,0.06); color: #f2f2f2; }
+        .mission input.mcode::placeholder { color: rgba(255,255,255,0.45); }
+        .mission button.verify { background: linear-gradient(180deg, rgba(255,0,0,0.18), rgba(255,0,0,0.12)); color: #fff; border: 1px solid rgba(255,0,0,0.45); padding: 0.5rem 0.8rem; border-radius: 6px; cursor: pointer; text-shadow: 0 0 6px rgba(255,0,0,0.35); }
+        .mission button.verify:hover { background: rgba(255,0,0,0.25); }
+        .mission .reveal-btn { background: rgba(255,255,255,0.06); color: var(--color-accent-dark); border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.7rem; border-radius: 6px; cursor: pointer; }
+        .mission .reveal-btn:hover { background: rgba(255,255,255,0.1); }
         .hint { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
         .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
         .block { background: rgba(0,0,0,0.35); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
@@ -51,12 +56,12 @@
     <script>
         // Mission configuration (adjust codes if needed before the event)
         const MISSION_CONFIG = {
-            m1: { title: 'Excavation Directive', code: '1742' },
+            m1: { title: 'Excavation Directive', code: '5728' },
             m2: { title: 'Payload Conversion', code: '2905' },
-            m3: { title: 'Array Sweep', code: '3140' }, // Snake
-            m4: { title: 'Sequence Lock', code: '6820' }, // Simon-like
+            m3: { title: 'Array Sweep', code: '3140' }, // Lights Out (separate page)
+            m4: { title: 'Sequence Lock', code: '6820' }, // Simon-like (separate page)
             m5: { title: 'Signal Decode', code: '1138' }, // Binary -> ASCII
-            m6: { title: 'Unknown Channel', code: '4411' }, // Chat
+            m6: { title: 'Unknown Channel', code: '4411' }, // Chat (separate page)
         };
 
         const LS_KEY = 'org_missions_state_v1';
@@ -116,20 +121,28 @@
                     input.value = input.value.replace(/[^0-9]/g, '').slice(0,4);
                 });
             });
+            // Info reveal buttons
+            document.querySelectorAll('.reveal-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const root = btn.closest('[data-mission]');
+                    const details = root && root.querySelector('.details');
+                    if (details) details.classList.toggle('hidden');
+                });
+            });
         }
 
         // Encoded download (m2)
         function setupDownload(){
             const btn = document.getElementById('payload-download');
             if (!btn) return;
-            const payload = 'GRIDLINE//PAYLOAD\nformat: base64\nnumber: 2905\nack: ok\n';
+            const payload = 'GRIDLINE//PAYLOAD\nnumber: 2905\nack: ok\n';
             const b64 = btoa(payload);
             btn.addEventListener('click', () => {
                 const blob = new Blob([b64], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'payload.b64.txt';
+                a.download = 'payload.dat';
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -306,9 +319,6 @@
             attachVerifyHandlers();
             setupDownload();
             setupBinary();
-            setupSnake();
-            setupSequence();
-            setupChat();
         });
     </script>
 </head>
@@ -320,7 +330,7 @@
 
     <main>
         <h1>Missions</h1>
-        <p class="hint">These are assignments issued by The Organization. Completion is appreciated. Each successful action yields a four digit number. Keep those secured. Their relation is important.</p>
+        <p class="hint">These are assignments issued by The Organization. Completion is mandatory. Each successful action yields a four digit number. Keep those secured.</p>
         <p class="pill" id="mission-progress">0 / 6 complete</p>
 
         <div class="missions-grid">
@@ -329,14 +339,13 @@
             <section class="mission" data-mission="m1">
                 <h3>Mission 1: Excavation Directive</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Retrieve a sealed container from the yard at 626 Armstead Street Azusa California. It is marked with the eye. Tools permitted. Replace soil to avoid suspicion.</p>
-                        <p class="block hint">Location: beneath the marked stone near the main entry steps. If this is incorrect, check for the eye marker placed by the local cell.</p>
-                        <p>Inside is a paper strip. Do not transmit. Return here and insert the four digits.</p>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Recover the strip from the yard. Do not broadcast.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p>Retrieve a sealed strip from 626 Armstead Street Azusa California. Look for the eye mark.</p>
+                    <p class="hint">Placement: beneath a marked stone near the front steps.</p>
+                    <p>Insert the four digits from the strip.</p>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>
@@ -349,14 +358,12 @@
             <section class="mission" data-mission="m2">
                 <h3>Mission 2: Payload Conversion</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Download the attached payload. The contents are encoded. Use any base64 converter online to recover the line. The number is the only part that matters.</p>
-                        <div class="controls"><button id="payload-download">Download Encoded Payload</button></div>
-                        <p class="hint">If the site refuses to parse, copy all text into a base64 decoder. The output will show the number.</p>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Acquire the payload and extract the line.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p>Download the payload file below. Recover the four digit line contained within.</p>
+                    <div class="controls"><button id="payload-download">Download Payload</button></div>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>
@@ -365,23 +372,16 @@
                 <div class="reveal hint hidden">Recorded.</div>
             </section>
 
-            <!-- M3 Snake game -->
+            <!-- M3 Lights Out -->
             <section class="mission" data-mission="m3">
-                <h3>Mission 3: Array Sweep</h3>
+                <h3>Mission 3: Lights Out</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Trace an array without losing the path. Reach the threshold and the line will emit the digits.</p>
-                        <div id="snake-wrap" class="snake-wrap">
-                            <canvas id="snake" width="240" height="240"></canvas>
-                            <div class="snake-stats">Score: <span id="snake-score">0</span> / <span class="mono">8</span></div>
-                            <div id="snake-msg" class="hint"></div>
-                            <button id="snake-start">Start</button>
-                        </div>
-                        <p class="hint">Use arrow keys. Wrapping is enabled.</p>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Power down the grid. When the field clears, the line appears.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p>Open the puzzle and solve the grid. When complete, record the four digits shown.</p>
+                    <p><a href="lightsout.html">Open Lights Out</a></p>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>
@@ -394,22 +394,12 @@
             <section class="mission" data-mission="m4">
                 <h3>Mission 4: Sequence Lock</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Observe. Repeat. Continue until the lock yields. Five rounds are sufficient.</p>
-                        <div class="center" style="margin:0.5rem 0;">
-                            <div id="seq-grid" class="seq-grid">
-                                <button class="seq-btn" style="background:#5ac8fa"></button>
-                                <button class="seq-btn" style="background:#ff5252"></button>
-                                <button class="seq-btn" style="background:#ffd452"></button>
-                                <button class="seq-btn" style="background:#7CFC00"></button>
-                            </div>
-                            <div class="seq-status" id="seq-status">Press Play</div>
-                            <button id="seq-play" style="margin-top:0.4rem;">Play</button>
-                        </div>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Calibrate to the lock’s pattern.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p>Open the lock interface and repeat the sequence until the channel releases the four digits.</p>
+                    <p><a href="sequence.html">Open Sequence Lock</a></p>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>
@@ -422,14 +412,11 @@
             <section class="mission" data-mission="m5">
                 <h3>Mission 5: Signal Decode</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Decode the transmission. 8-bit ASCII. Separate by spaces.</p>
-                        <p class="block mono" id="bin-seq"></p>
-                        <p class="hint">Use any binary-to-text tool. Insert only the four digits you recover.</p>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Intercepted signal fragment. Recover the digits.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p class="mono" id="bin-seq"></p>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>
@@ -442,17 +429,12 @@
             <section class="mission" data-mission="m6">
                 <h3>Mission 6: Unknown Channel</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
-                <ul class="menu">
-                    <li>
-                        <p>Establish contact with an unlisted operator. Keep it short. Retrieve the line key.</p>
-                        <div id="chatbox" class="block">
-                            <div class="chatbox"></div>
-                            <div class="chat-row"><input placeholder="Type"/><button>Send</button></div>
-                        </div>
-                        <p class="hint">Identity is not confirmed. Signal behavior suggests someone close to the Founder.</p>
-                    </li>
-                </ul>
+                <p class="hint">Brief: Open a masked channel and obtain the key.</p>
+                <button class="reveal-btn" style="margin-top:0.5rem;">Reveal Details</button>
+                <div class="details hidden block">
+                    <p>Establish a secure text channel and convince the operator to release the four digit key.</p>
+                    <p><a href="unknown.html">Open Channel</a></p>
+                </div>
                 <div class="code-row">
                     <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
                     <button class="verify">Submit Code</button>

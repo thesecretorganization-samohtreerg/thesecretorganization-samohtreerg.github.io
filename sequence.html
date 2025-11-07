@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sequence Lock | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 680px; margin: 0 auto; padding: 1rem; text-align: center; }
+    .seq-grid { display: grid; grid-template-columns: repeat(2, 100px); grid-template-rows: repeat(2, 100px); gap: 14px; justify-content: center; margin: 1rem 0; }
+    .pad { width: 100px; height: 100px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); filter: brightness(0.85); cursor: pointer; }
+    .pad.on { filter: brightness(1.75); box-shadow: 0 0 18px currentColor; }
+    .btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .hint { color: rgba(255,255,255,0.65); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="missions.html">Back to Missions</a>
+  </nav>
+  <main class="wrap">
+    <h1>Sequence Lock</h1>
+    <p class="hint">Observe. Repeat. Continue until the lock yields.</p>
+    <div id="grid" class="seq-grid">
+      <button class="pad" style="background:#5ac8fa"></button>
+      <button class="pad" style="background:#ff5252"></button>
+      <button class="pad" style="background:#ffd452"></button>
+      <button class="pad" style="background:#7CFC00"></button>
+    </div>
+    <div id="status" class="hint">Press Play</div>
+    <p style="margin-top:0.5rem;"><button id="play" class="btn">Play</button></p>
+  </main>
+  <script>
+    const pads = Array.from(document.querySelectorAll('.pad'));
+    const statusEl = document.getElementById('status');
+    const playBtn = document.getElementById('play');
+    let seq=[], idx=0, round=0, playing=false;
+    function flash(i){ const el=pads[i]; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'), 350); }
+    function play(){ playing=true; idx=0; statusEl.textContent='Playing'; let i=0; const iv=setInterval(()=>{ flash(seq[i]); i++; if(i>=seq.length){ clearInterval(iv); playing=false; statusEl.textContent='Repeat the sequence'; } }, 550); }
+    function next(){ seq.push(Math.floor(Math.random()*4)); round++; play(); }
+    pads.forEach((el,i)=> el.addEventListener('click', ()=>{ if(playing) return; flash(i); if(i===seq[idx]){ idx++; if(idx===seq.length){ if(round>=5){ statusEl.textContent='Unlocked. Code: 6820'; } else { statusEl.textContent='Good. Next.'; setTimeout(next,600); } } } else { statusEl.textContent='Fail. Reset.'; seq=[]; round=0; setTimeout(next,700); } }));
+    playBtn.addEventListener('click', ()=>{ seq=[]; round=0; next(); });
+  </script>
+</body>
+</html>

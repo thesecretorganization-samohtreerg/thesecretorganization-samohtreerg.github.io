@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unknown Channel | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 720px; margin: 0 auto; padding: 1rem; }
+    .chat { height: 280px; overflow: auto; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 0.6rem; }
+    .row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .row input { flex: 1; padding: 0.45rem 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #f2f2f2; }
+    .row button { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
+    .row button:hover { background: rgba(255,255,255,0.12); }
+    .msg { margin: 0.25rem 0; }
+    .you { color: #9cdcfe; }
+    .them { color: #ffa07a; }
+    .sys { color: #c0c0c0; font-style: italic; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="missions.html">Back to Missions</a>
+  </nav>
+  <main class="wrap">
+    <h1>Unknown Channel</h1>
+    <div id="log" class="chat"></div>
+    <div class="row"><input id="inp" placeholder="Type"/><button id="send">Send</button></div>
+    <p class="hint" style="margin-top:0.5rem;">Maintain control of the exchange. Recover the line key.</p>
+  </main>
+  <script>
+    const log = document.getElementById('log');
+    const inp = document.getElementById('inp');
+    const send = document.getElementById('send');
+    function add(cls, text){ const d=document.createElement('div'); d.className='msg '+cls; d.textContent=text; log.appendChild(d); log.scrollTop = log.scrollHeight; }
+    function them(t){ add('them', t); }
+    function you(t){ add('you', t); }
+    function sys(t){ add('sys', t); }
+    let state = 'init'; let turns = 0; let gave=false;
+    sys('Channel masked. Routing unknown.');
+    them('Identify.');
+    function respond(txt){
+      const v = (txt||'').trim().toLowerCase();
+      turns++;
+      if(state==='init'){
+        if(v.includes('founder') || v.includes('nivlac')){ them('Designation accepted. State need.'); state='probe'; }
+        else if(turns>=2){ them('Your silence wastes time.'); }
+        else { them('No metadata. Continue.'); }
+      } else if(state==='probe'){
+        if(v.includes('key')||v.includes('line')||v.includes('code')){ them('Prove you are not a stray. Reply with the inverse of 2204.'); state='challenge'; }
+        else { them('Your request is unclear.'); }
+      } else if(state==='challenge'){
+        if(v.includes('4022')){ them('Fine. Line key: 4411.'); gave=true; state='end'; }
+        else { them('Wrong. Reset your head.'); }
+      } else if(state==='end'){
+        them('This is complete.');
+      }
+    }
+    send.addEventListener('click', ()=>{ const t=inp.value; if(!t) return; you(t); inp.value=''; respond(t); });
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') send.click(); });
+  </script>
+</body>
+</html>

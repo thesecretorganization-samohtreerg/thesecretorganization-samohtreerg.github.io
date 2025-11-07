@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lights Out | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 680px; margin: 0 auto; padding: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(5, 56px); gap: 8px; justify-content: center; }
+    .cell { width: 56px; height: 56px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; background: rgba(255,255,255,0.07); }
+    .cell.on { background: rgba(255,0,0,0.25); box-shadow: 0 0 10px rgba(255,0,0,0.3) inset; }
+    .panel { margin-top: 1rem; text-align: center; }
+    .btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="missions.html">Back to Missions</a>
+  </nav>
+  <main class="wrap">
+    <h1>Lights Out</h1>
+    <p class="hint">Power down every node. Tapping toggles the node and its neighbors.</p>
+    <div id="grid" class="grid"></div>
+    <div class="panel">
+      <button id="shuffle" class="btn">Shuffle</button>
+      <div id="msg" class="hint" style="margin-top:0.5rem;"></div>
+    </div>
+  </main>
+  <script>
+    const size = 5;
+    const grid = document.getElementById('grid');
+    const msg = document.getElementById('msg');
+    const shuffleBtn = document.getElementById('shuffle');
+    const cells = [];
+    function idx(x,y){ return y*size + x; }
+    function inb(x,y){ return x>=0 && y>=0 && x<size && y<size; }
+    function toggle(x,y){ if(!inb(x,y)) return; const c=cells[idx(x,y)]; c.classList.toggle('on'); }
+    function click(x,y){ toggle(x,y); toggle(x+1,y); toggle(x-1,y); toggle(x,y+1); toggle(x,y-1); check(); }
+    function check(){
+      const anyOn = cells.some(c=>c.classList.contains('on'));
+      if(!anyOn){ msg.textContent = 'Complete. Code: 3140'; }
+      else { msg.textContent = ''; }
+    }
+    function randomize(){
+      cells.forEach(c=>c.classList.remove('on'));
+      for(let k=0;k<12;k++) click(Math.floor(Math.random()*size), Math.floor(Math.random()*size));
+      msg.textContent='';
+    }
+    for(let y=0;y<size;y++){
+      for(let x=0;x<size;x++){
+        const b=document.createElement('button'); b.className='cell on'; b.addEventListener('click', ()=>click(x,y));
+        grid.appendChild(b); cells.push(b);
+      }
+    }
+    shuffleBtn.addEventListener('click', randomize);
+    randomize();
+  </script>
+</body>
+</html>
