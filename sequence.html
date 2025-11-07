@@ -14,6 +14,10 @@
     .btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
     .btn:hover { background: rgba(255,255,255,0.12); }
     .hint { color: rgba(255,255,255,0.65); }
+    .prog-wrap { max-width: 360px; margin: 0.5rem auto 0; text-align: left; }
+    .bar { height: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 6px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, rgba(255,0,0,0.35), rgba(255,0,0,0.8)); transition: width 0.25s ease; }
+    .turns { margin-top: 0.35rem; }
   </style>
 </head>
 <body>
@@ -30,18 +34,40 @@
       <button class="pad" style="color:#7CFC00"></button>
     </div>
     <div id="status" class="hint">Press Play</div>
+    <div class="prog-wrap">
+      <div class="bar"><span id="bar"></span></div>
+      <div id="turns" class="hint turns">Turns left: 15</div>
+    </div>
     <p style="margin-top:0.5rem;"><button id="play" class="btn">Play</button></p>
   </main>
   <script>
     const pads = Array.from(document.querySelectorAll('.pad'));
     const statusEl = document.getElementById('status');
     const playBtn = document.getElementById('play');
-    let seq=[], idx=0, round=0, playing=false;
-    function flash(i){ const el=pads[i]; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'), 350); }
+    const bar = document.getElementById('bar');
+    const turnsEl = document.getElementById('turns');
+    const maxRounds = 15;
+    let seq=[], idx=0, generated=0, completed=0, playing=false;
+
+    // Audio
+    let audioCtx;
+    const freqs = [523.25, 659.25, 783.99, 987.77];
+    function initAudio(){ if(!audioCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) audioCtx = new AC(); }}
+    function playTone(i, dur=0.2){ if(!audioCtx) return; const now=audioCtx.currentTime; const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain(); osc.type='sine'; osc.frequency.value=freqs[i%freqs.length]; gain.gain.setValueAtTime(0.0001, now); gain.gain.linearRampToValueAtTime(0.25, now+0.02); gain.gain.exponentialRampToValueAtTime(0.001, now+dur); osc.connect(gain).connect(audioCtx.destination); osc.start(now); osc.stop(now+dur+0.05); }
+
+    function updateProgress(){
+      const left = Math.max(0, maxRounds - completed);
+      turnsEl.textContent = `Turns left: ${left}`;
+      const pct = Math.min(100, (completed / maxRounds) * 100);
+      bar.style.width = pct + '%';
+    }
+
+    function flash(i){ const el=pads[i]; el.classList.add('on'); playTone(i,0.18); setTimeout(()=>el.classList.remove('on'), 250); }
     function play(){ playing=true; idx=0; statusEl.textContent='Playing'; let i=0; const iv=setInterval(()=>{ flash(seq[i]); i++; if(i>=seq.length){ clearInterval(iv); playing=false; statusEl.textContent='Repeat the sequence'; } }, 550); }
-    function next(){ seq.push(Math.floor(Math.random()*4)); round++; play(); }
-    pads.forEach((el,i)=> el.addEventListener('click', ()=>{ if(playing) return; flash(i); if(i===seq[idx]){ idx++; if(idx===seq.length){ if(round>=10){ statusEl.textContent='Unlocked. Code: 6820'; } else { statusEl.textContent='Good. Next.'; setTimeout(next,600); } } } else { statusEl.textContent='Fail. Reset.'; seq=[]; round=0; setTimeout(next,700); } }));
-    playBtn.addEventListener('click', ()=>{ seq=[]; round=0; next(); });
+    function next(){ seq.push(Math.floor(Math.random()*4)); generated++; play(); }
+    pads.forEach((el,i)=> el.addEventListener('click', ()=>{ if(playing) return; if(!audioCtx) initAudio(); playTone(i,0.15); flash(i); if(i===seq[idx]){ idx++; if(idx===seq.length){ completed++; updateProgress(); if(completed>=maxRounds){ statusEl.textContent='Unlocked. Code: 6820'; } else { statusEl.textContent='Good. Next.'; setTimeout(next,600); } } } else { statusEl.textContent='Fail. Reset.'; seq=[]; idx=0; generated=0; completed=0; updateProgress(); setTimeout(next,700); } }));
+    playBtn.addEventListener('click', ()=>{ initAudio(); seq=[]; idx=0; generated=0; completed=0; updateProgress(); next(); });
+    updateProgress();
   </script>
 </body>
 </html>
