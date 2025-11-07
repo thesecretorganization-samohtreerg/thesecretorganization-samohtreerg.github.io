@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missions | The Organization</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="menu.js"></script>
+    <style>
+        /* Minimal, local styles for mission widgets without altering global CSS */
+        .missions-grid { display: grid; gap: 1rem; max-width: 1000px; margin: 0 auto; }
+        @media (min-width: 900px){ .missions-grid { grid-template-columns: 1fr 1fr; } }
+        .mission { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
+        .mission h3 { margin: 0 0 0.25rem 0; color: var(--color-accent-dark); }
+        .mission small { color: rgba(255,255,255,0.6); }
+        .mission .controls { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+        .mission .status { font-weight: bold; color: var(--color-accent-dark); }
+        .mission .complete { color: #7CFC00; }
+        .mission .failed { color: #ff5c5c; }
+        .mission .code-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
+        .mission input.mcode { width: 5.5rem; text-align: center; padding: 0.35rem; font-size: 1.05rem; }
+        .hint { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+        .block { background: rgba(0,0,0,0.35); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
+        .pill { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 999px; background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.25); }
+        .center { text-align: center; }
+        .hidden { display: none; }
+
+        /* Snake */
+        .snake-wrap { display: grid; gap: 0.5rem; justify-items: center; }
+        canvas#snake { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); }
+        .snake-stats { font-size: 0.95rem; }
+
+        /* Sequence (Simon-style) */
+        .seq-grid { display: grid; grid-template-columns: repeat(2, 90px); grid-template-rows: repeat(2, 90px); gap: 10px; justify-content: center; }
+        .seq-btn { width: 90px; height: 90px; border-radius: 8px; filter: brightness(0.85); border: 1px solid rgba(255,255,255,0.2); cursor: pointer; }
+        .seq-btn.on { filter: brightness(1.75); box-shadow: 0 0 16px currentColor; }
+        .seq-status { text-align: center; margin-top: 0.25rem; }
+
+        /* Chat */
+        .chatbox { height: 220px; overflow: auto; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 0.5rem; }
+        .msg { margin: 0.2rem 0; }
+        .msg.you { color: #9cdcfe; }
+        .msg.them { color: #ffa07a; }
+        .msg.sys { color: #c0c0c0; font-style: italic; }
+        .chat-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .chat-row input { flex: 1; }
+    </style>
+    <script>
+        // Mission configuration (adjust codes if needed before the event)
+        const MISSION_CONFIG = {
+            m1: { title: 'Excavation Directive', code: '1742' },
+            m2: { title: 'Payload Conversion', code: '2905' },
+            m3: { title: 'Array Sweep', code: '3140' }, // Snake
+            m4: { title: 'Sequence Lock', code: '6820' }, // Simon-like
+            m5: { title: 'Signal Decode', code: '1138' }, // Binary -> ASCII
+            m6: { title: 'Unknown Channel', code: '4411' }, // Chat
+        };
+
+        const LS_KEY = 'org_missions_state_v1';
+        function getState() {
+            try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+        }
+        function setState(s) {
+            localStorage.setItem(LS_KEY, JSON.stringify(s));
+        }
+        function markComplete(id, code) {
+            const state = getState();
+            state[id] = { completed: true, code };
+            setState(state);
+            const root = document.querySelector(`[data-mission="${id}"]`);
+            if (!root) return;
+            root.querySelector('.status').textContent = 'Completed';
+            root.querySelector('.status').classList.add('complete');
+            const input = root.querySelector('input.mcode');
+            if (input) input.value = code;
+            root.querySelectorAll('input, button').forEach(el => {
+                if (el.classList.contains('menu-toggle')) return; // keep toggles usable
+                el.disabled = true;
+            });
+            const reveal = root.querySelector('.reveal');
+            if (reveal) reveal.classList.remove('hidden');
+            updateSummary();
+        }
+        function updateSummary(){
+            const state = getState();
+            let done = 0, total = 0;
+            for (const id in MISSION_CONFIG) {
+                total++;
+                if (state[id]?.completed) done++;
+            }
+            const el = document.getElementById('mission-progress');
+            if (el) el.textContent = `${done} / ${total} complete`;
+        }
+        function attachVerifyHandlers(){
+            document.querySelectorAll('[data-mission]').forEach(root => {
+                const id = root.getAttribute('data-mission');
+                const expected = MISSION_CONFIG[id].code;
+                const input = root.querySelector('input.mcode');
+                const btn = root.querySelector('button.verify');
+                if (!btn) return;
+                btn.addEventListener('click', () => {
+                    const v = (input.value || '').trim();
+                    if (/^\d{4}$/.test(v) && v === expected) {
+                        markComplete(id, v);
+                    } else {
+                        const msg = root.querySelector('.result');
+                        msg.textContent = 'Invalid or incomplete. Recheck your work.';
+                        msg.classList.add('failed');
+                        setTimeout(() => msg.classList.remove('failed'), 1000);
+                    }
+                });
+                input.addEventListener('input', () => {
+                    input.value = input.value.replace(/[^0-9]/g, '').slice(0,4);
+                });
+            });
+        }
+
+        // Encoded download (m2)
+        function setupDownload(){
+            const btn = document.getElementById('payload-download');
+            if (!btn) return;
+            const payload = 'GRIDLINE//PAYLOAD\nformat: base64\nnumber: 2905\nack: ok\n';
+            const b64 = btoa(payload);
+            btn.addEventListener('click', () => {
+                const blob = new Blob([b64], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'payload.b64.txt';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            });
+        }
+
+        // Binary decode mission (m5)
+        function setupBinary(){
+            const el = document.getElementById('bin-seq');
+            if (!el) return;
+            // 1138 => ASCII: 49 49 51 56 => binary groups below
+            el.textContent = '00110001 00110001 00110011 00111000';
+        }
+
+        // Snake (m3)
+        function setupSnake(){
+            const wrap = document.getElementById('snake-wrap');
+            if (!wrap) return;
+            const cvs = document.getElementById('snake');
+            const ctx = cvs.getContext('2d');
+            const startBtn = document.getElementById('snake-start');
+            const scoreEl = document.getElementById('snake-score');
+            const msgEl = document.getElementById('snake-msg');
+            const goal = 8; // score needed
+            const grid = 20; // px per cell
+            const cells = cvs.width / grid;
+            let snake, dx, dy, apple, score, loop, speed;
+
+            function reset(){
+                snake = [{x:10, y:10}];
+                dx = 1; dy = 0;
+                apple = {x: Math.floor(Math.random()*cells), y: Math.floor(Math.random()*cells)};
+                score = 0; speed = 120;
+                scoreEl.textContent = '0';
+                msgEl.textContent = '';
+            }
+            function drawCell(x,y,color){
+                ctx.fillStyle = color; ctx.fillRect(x*grid, y*grid, grid-1, grid-1);
+            }
+            function placeApple(){
+                apple = {x: Math.floor(Math.random()*cells), y: Math.floor(Math.random()*cells)};
+            }
+            function step(){
+                loop = setTimeout(()=>requestAnimationFrame(step), speed);
+                ctx.clearRect(0,0,cvs.width,cvs.height);
+                const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                // wrap
+                head.x = (head.x + cells) % cells;
+                head.y = (head.y + cells) % cells;
+                // collision
+                if (snake.some(p => p.x===head.x && p.y===head.y)) {
+                    msgEl.textContent = 'Trace lost. Reset.';
+                    clearTimeout(loop); return;
+                }
+                snake.unshift(head);
+                if (head.x === apple.x && head.y === apple.y){
+                    score++; scoreEl.textContent = String(score);
+                    placeApple(); if (speed>70) speed-=4;
+                } else {
+                    snake.pop();
+                }
+                drawCell(apple.x, apple.y, '#ff5050');
+                snake.forEach((p,i)=> drawCell(p.x,p.y, i===0?'#7CFC00':'#00aa00'));
+                if (score >= goal){
+                    msgEl.textContent = 'Code revealed: 3140';
+                    // auto-fill code input
+                    const root = document.querySelector('[data-mission="m3"]');
+                    const input = root.querySelector('input.mcode');
+                    input.value = '3140';
+                    clearTimeout(loop);
+                }
+            }
+            function onKey(e){
+                if (e.key==='ArrowUp' && dy!==1){dx=0;dy=-1}
+                else if (e.key==='ArrowDown' && dy!==-1){dx=0;dy=1}
+                else if (e.key==='ArrowLeft' && dx!==1){dx=-1;dy=0}
+                else if (e.key==='ArrowRight' && dx!==-1){dx=1;dy=0}
+            }
+            startBtn.addEventListener('click', ()=>{
+                clearTimeout(loop); reset(); step(); cvs.focus();
+            });
+            cvs.tabIndex = 0; cvs.addEventListener('keydown', onKey);
+            reset();
+        }
+
+        // Sequence Lock (m4)
+        function setupSequence(){
+            const grid = document.getElementById('seq-grid');
+            if (!grid) return;
+            const pads = Array.from(grid.querySelectorAll('.seq-btn'));
+            const playBtn = document.getElementById('seq-play');
+            const status = document.getElementById('seq-status');
+            let seq = [], input = [], idx = 0, round = 0, playing = false;
+
+            function flash(i){
+                const el = pads[i];
+                el.classList.add('on');
+                setTimeout(()=> el.classList.remove('on'), 350);
+            }
+            function play(){
+                playing = true; input = []; idx = 0; status.textContent = 'Playing';
+                let i = 0; const iv = setInterval(()=>{
+                    flash(seq[i]); i++; if (i>=seq.length){ clearInterval(iv); playing=false; status.textContent='Repeat the sequence'; }
+                }, 500);
+            }
+            function nextRound(){
+                seq.push(Math.floor(Math.random()*4)); round++;
+                play();
+            }
+            pads.forEach((el,i)=>{
+                el.addEventListener('click', ()=>{
+                    if (playing) return;
+                    flash(i);
+                    if (i === seq[idx]){
+                        idx++;
+                        if (idx === seq.length){
+                            if (round >= 5){
+                                status.textContent = 'Code revealed: 6820';
+                                const root = document.querySelector('[data-mission="m4"]');
+                                root.querySelector('input.mcode').value = '6820';
+                            } else {
+                                status.textContent = 'Good. Next round';
+                                setTimeout(nextRound, 600);
+                            }
+                        }
+                    } else {
+                        status.textContent = 'Sequence failed. Resetting.'; seq=[]; round=0; setTimeout(nextRound, 700);
+                    }
+                });
+            });
+            playBtn.addEventListener('click', ()=>{ seq=[]; round=0; nextRound(); });
+        }
+
+        // Chat (m6)
+        function setupChat(){
+            const box = document.getElementById('chatbox');
+            if (!box) return;
+            const log = box.querySelector('.chatbox');
+            const input = box.querySelector('input');
+            const send = box.querySelector('button');
+            let turns = 0, revealed = false;
+            function add(type, text){
+                const div = document.createElement('div');
+                div.className = 'msg ' + type; div.textContent = text; log.appendChild(div); log.scrollTop = log.scrollHeight;
+            }
+            function them(text){ add('them', text); }
+            function you(text){ add('you', text); }
+            function sys(text){ add('sys', text); }
+            sys('Channel walled. Identity masked.');
+            them('Who initiates?');
+            function respond(val){
+                turns++;
+                const v = (val||'').trim().toLowerCase();
+                if (!revealed){
+                    if (turns === 1){ them('State purpose.'); }
+                    else if (v.includes('founder') || v.includes('nivlac')){ them('You are late. Ask the line key.'); }
+                    else if (v.includes('key') || v.includes('code')){ them('Line key is unstable. Prove you are not a ghost.'); }
+                    else if (turns >= 4){ them('Fine. Line key: 4411.'); revealed=true; }
+                    else { them('Silence is preferred. Continue.'); }
+                } else {
+                    them('This channel is over.');
+                }
+            }
+            send.addEventListener('click', ()=>{ const t = input.value; if (!t) return; you(t); input.value=''; respond(t); });
+            input.addEventListener('keydown', (e)=>{ if (e.key==='Enter'){ send.click(); }});
+        }
+
+        document.addEventListener('DOMContentLoaded', ()=>{
+            // Restore state
+            const state = getState();
+            for (const id in state){ if (state[id]?.completed) markComplete(id, state[id].code); }
+            updateSummary();
+            attachVerifyHandlers();
+            setupDownload();
+            setupBinary();
+            setupSnake();
+            setupSequence();
+            setupChat();
+        });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+    </nav>
+
+    <main>
+        <h1>Missions</h1>
+        <p class="hint">These are assignments issued by The Organization. Completion is mandatory. Each successful action yields a four digit number. Keep those secured. Their relation is not documented.</p>
+        <p class="pill" id="mission-progress">0 / 6 complete</p>
+
+        <div class="missions-grid">
+
+            <!-- M1 Excavation -->
+            <section class="mission" data-mission="m1">
+                <h3>Mission 1: Excavation Directive</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Retrieve a sealed container from the yard at 626 Armstead Street Azusa California. It is marked with the eye. Tools permitted. Replace soil to avoid suspicion.</p>
+                        <p class="block hint">Location: beneath the marked stone near the main entry steps. If this is incorrect, check for the eye marker placed by the local cell.</p>
+                        <p>Inside is a paper strip. Do not transmit. Return here and insert the four digits.</p>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+            <!-- M2 Encoded download -->
+            <section class="mission" data-mission="m2">
+                <h3>Mission 2: Payload Conversion</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Download the attached payload. The contents are encoded. Use any base64 converter online to recover the line. The number is the only part that matters.</p>
+                        <div class="controls"><button id="payload-download">Download Encoded Payload</button></div>
+                        <p class="hint">If the site refuses to parse, copy all text into a base64 decoder. The output will show the number.</p>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+            <!-- M3 Snake game -->
+            <section class="mission" data-mission="m3">
+                <h3>Mission 3: Array Sweep</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Trace an array without losing the path. Reach the threshold and the line will emit the digits.</p>
+                        <div id="snake-wrap" class="snake-wrap">
+                            <canvas id="snake" width="240" height="240"></canvas>
+                            <div class="snake-stats">Score: <span id="snake-score">0</span> / <span class="mono">8</span></div>
+                            <div id="snake-msg" class="hint"></div>
+                            <button id="snake-start">Start</button>
+                        </div>
+                        <p class="hint">Use arrow keys. Wrapping is enabled.</p>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+            <!-- M4 Sequence lock -->
+            <section class="mission" data-mission="m4">
+                <h3>Mission 4: Sequence Lock</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Observe. Repeat. Continue until the lock yields. Five rounds are sufficient.</p>
+                        <div class="center" style="margin:0.5rem 0;">
+                            <div id="seq-grid" class="seq-grid">
+                                <button class="seq-btn" style="background:#5ac8fa"></button>
+                                <button class="seq-btn" style="background:#ff5252"></button>
+                                <button class="seq-btn" style="background:#ffd452"></button>
+                                <button class="seq-btn" style="background:#7CFC00"></button>
+                            </div>
+                            <div class="seq-status" id="seq-status">Press Play</div>
+                            <button id="seq-play" style="margin-top:0.4rem;">Play</button>
+                        </div>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+            <!-- M5 Binary decode -->
+            <section class="mission" data-mission="m5">
+                <h3>Mission 5: Signal Decode</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Decode the transmission. 8-bit ASCII. Separate by spaces.</p>
+                        <p class="block mono" id="bin-seq"></p>
+                        <p class="hint">Use any binary-to-text tool. Insert only the four digits you recover.</p>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+            <!-- M6 Chat with unknown (Nivlac) -->
+            <section class="mission" data-mission="m6">
+                <h3>Mission 6: Unknown Channel</h3>
+                <small>Status: <span class="status">Incomplete</span></small>
+                <button class="menu-toggle base" style="margin-top:0.5rem;">Accept Mission</button>
+                <ul class="menu">
+                    <li>
+                        <p>Establish contact with an unlisted operator. Keep it short. Retrieve the line key.</p>
+                        <div id="chatbox" class="block">
+                            <div class="chatbox"></div>
+                            <div class="chat-row"><input placeholder="Type"/><button>Send</button></div>
+                        </div>
+                        <p class="hint">Identity is not confirmed. Signal behavior suggests someone close to the Founder.</p>
+                    </li>
+                </ul>
+                <div class="code-row">
+                    <input class="mcode mono" inputmode="numeric" placeholder="4 digits" maxlength="4">
+                    <button class="verify">Submit Code</button>
+                    <span class="result mono"></span>
+                </div>
+                <div class="reveal hint hidden">Recorded.</div>
+            </section>
+
+        </div>
+
+        <section style="margin-top:1.25rem;">
+            <p class="hint">Note: Completed missions persist on this device. If a status resets, reinsert the digits. When the work is complete, proceed to Internal Access.</p>
+        </section>
+    </main>
+
+    <img src="icon.png" class="icon" style="top:28%; left:10%;">
+    <img src="icon.png" class="icon" style="bottom:15%; right:14%;">
+</body>
+
+</html>
