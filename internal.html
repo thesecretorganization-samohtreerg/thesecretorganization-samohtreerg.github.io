@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Access | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 780px; margin: 0 auto; padding: 1rem; }
+    .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
+    .row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin-top: 0.5rem; }
+    input.total { width: 8rem; text-align: center; padding: 0.55rem 0.7rem; font-size: 1.1rem; border-radius: 6px; border: 1px solid rgba(255,0,0,0.28); background: rgba(255,255,255,0.06); color: #f2f2f2; }
+    input.total::placeholder { color: rgba(255,255,255,0.45); }
+    button.verify { background: linear-gradient(180deg, rgba(255,0,0,0.18), rgba(255,0,0,0.12)); color: #fff; border: 1px solid rgba(255,0,0,0.45); padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer; text-shadow: 0 0 6px rgba(255,0,0,0.35); }
+    button.verify:hover { background: rgba(255,0,0,0.25); }
+    .ok { color: #7CFC00; font-weight: bold; }
+    .bad { color: #ff5c5c; font-weight: bold; }
+    .reveal { margin-top: 0.75rem; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+  <main class="wrap">
+    <h1>Internal Access</h1>
+    <section class="panel">
+      <p>Enter the total from all mission outputs. Verify it exactly.</p>
+      <div class="row">
+        <input id="total" class="total mono" inputmode="numeric" placeholder="Total" maxlength="6">
+        <button id="submit" class="verify">Verify</button>
+        <span id="msg" class="mono"></span>
+      </div>
+      <div id="reveal" class="reveal hidden">
+        <p class="ok">Authorization released.</p>
+        <p class="mono" id="loc"></p>
+        <p class="hint">Use the physical key to open the box you found. Proceed when ready.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const EXPECTED = 24142; // sum of six mission codes
+    const LS_KEY = 'org_internal_total_v1';
+    // Edit this to set the exact key location text.
+    const KEY_LOCATION = 'Key location ready: check the agreed spot inside the house. (Edit internal.html to set exact text.)';
+
+    const input = document.getElementById('total');
+    const btn = document.getElementById('submit');
+    const msg = document.getElementById('msg');
+    const reveal = document.getElementById('reveal');
+    const loc = document.getElementById('loc');
+
+    function success() {
+      localStorage.setItem(LS_KEY, String(EXPECTED));
+      msg.textContent = 'Accepted';
+      msg.className = 'mono ok';
+      loc.textContent = KEY_LOCATION;
+      reveal.classList.remove('hidden');
+    }
+
+    function restore() {
+      try {
+        const v = localStorage.getItem(LS_KEY);
+        if (v && Number(v) === EXPECTED) {
+          success();
+        }
+      } catch (e) {}
+    }
+
+    btn.addEventListener('click', () => {
+      const v = Number((input.value || '').trim());
+      if (v === EXPECTED) {
+        success();
+      } else {
+        msg.textContent = 'Denied';
+        msg.className = 'mono bad';
+      }
+    });
+
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/[^0-9]/g, '').slice(0, 6);
+    });
+
+    restore();
+  </script>
+</body>
+</html>
