@@ -108,6 +108,10 @@ nav a:hover {
     text-shadow: 0 0 10px var(--color-accent-hover);
 }
 
+.nav-start>* {
+    display: inline-block;
+}
+
 /* =========================================
    Top Icon Animation
 ========================================= */
