@@ -109,7 +109,7 @@
       if (!key) return null;
       try {
         // Prefer Responses API for gpt-5-nano
-        const convo = messages.concat({ role: 'user', content: prompt }).slice(0, 60)
+        const convo = messages.concat({ role: 'user', content: prompt }).slice(0, 40)
           .map(m => `${m.role.toUpperCase()}: ${m.content}`)
           .join('\n\n');
         const res1 = await fetch('https://api.openai.com/v1/responses', {
