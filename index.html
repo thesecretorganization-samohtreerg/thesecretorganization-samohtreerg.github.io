@@ -153,7 +153,7 @@
                     structure. Ultimately, the target coordinates will be destroyed. The Founder's goal will be reached.
                     The Chosen One must not preveil.</p>
                 <p><strong>Target Coordinates: 626 Armstead Street, Glendora, California</strong></p>
-                <p><strong>Event Initiation Countdown: <span id="timer">Loading...</span></strong></p>
+                <p><strong>Event Initiation Countdown: <span class="timer">Loading...</span></strong></p>
             </ul>
         </section>
 
@@ -235,8 +235,8 @@
         });
 
         // Countdown timer to the "Event"
-        const countdownDate = new Date('2025-11-010T18:00:00').getTime(); // change as needed
-        const timerEl = document.getElementById('timer');
+        const countdownDate = new Date('2025-11-10').getTime(); // change as needed
+        const timerElelements = document.querySelectorAll('.timer');
 
         const updateTimer = () => {
             const now = new Date().getTime();
@@ -247,13 +247,9 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-            if (distance < 0) {
-                clearInterval(x);
-                timerEl.textContent = 'EVENT TRIGGERED';
-                document.body.classList.add('event-triggered');
-            }
+            timerElelements.forEach(timerEl => {
+                timerEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            });
         };
 
         const x = setInterval(updateTimer, 1000);
