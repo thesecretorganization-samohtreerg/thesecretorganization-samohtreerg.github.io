@@ -45,6 +45,7 @@
 
     <!-- Forum List View -->
     <section id="forum-list-view">
+      <p>Community messages. Please be respectful.</p>
       <!-- Sticky search bar -->
       <div class="bar">
         <div class="row">
@@ -83,10 +84,10 @@
       <!-- Locked compose area -->
       <div class="mission" style="margin-top: 18px;">
         <div class="glow-text" style="margin-bottom:8px;">
-          Thread locked due to inactivity — replying disabled.
+          Thread locked due to inactivity.
         </div>
         <label class="small" for="lockedText">Reply</label>
-        <textarea id="lockedText" rows="4" placeholder="You cannot reply to this thread."
+        <textarea id="lockedText" rows="4" placeholder="Replying disabled."
                   style="width:100%; background:#100; color:#c99; border:1px solid #400; padding:8px;"
                   disabled></textarea>
         <div style="margin-top: 10px; display:flex; gap:8px;">
@@ -97,15 +98,11 @@
     </section>
   </main>
 
-  <img src="icon.png" class="icon" style="top:25%; left:15%;">
-  <img src="icon.png" class="icon" style="bottom:10%; right:20%;">
-
   <script>
     /*****************************************
      * Editable Data (threads & posts)
      *****************************************/
     const FORUM_DATA = {
-      forumLocked: true,
       threads: [
         {
           id: "t-awakening-delays",
@@ -495,7 +492,7 @@
     });
 
     /*****************************************
-     * Render: Thread View (unchanged)
+     * Render: Thread View
      *****************************************/
     const threadView = document.getElementById('thread-view');
     const backBtn = document.getElementById('backBtn');
