@@ -47,7 +47,7 @@
     // Config: include API key here (temporary project)
     const OPENAI_API_KEY = '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';
     const MODEL = 'gpt-5-nano';
-    const PROMPT_ID = 'prmpt_nivlac_v1';
+    const PROMPT_ID = 'pmpt_6911233f7bb88197894848bfb4305eef073c39e11439c848';
 
     // UI refs
     const log = document.getElementById('log');
@@ -92,7 +92,7 @@
       if (!key) return null;
       try {
         // Responses API with stored Prompt ID and conversation memory
-        const body1 = { model: MODEL, input: String(prompt), instructions: { type: 'prompt', id: PROMPT_ID } };
+        const body = { model: MODEL, input: String(prompt), prompt: { id: PROMPT_ID, version: 1 } };
         if (typeof conversationId === 'string' && conversationId) body1.conversation = { id: conversationId };
 
         const res1 = await fetch('https://api.openai.com/v1/responses', {
@@ -106,22 +106,6 @@
           else if (data1?.conversation_id) conversationId = data1.conversation_id;
           const text1 = (data1?.output_text || data1?.output?.[0]?.content?.[0]?.text || '').trim();
           if (text1) return text1;
-        }
-
-        // Fallback: alternate prompt reference shape
-        const body2 = { model: MODEL, input: String(prompt), prompt: { id: PROMPT_ID } };
-        if (typeof conversationId === 'string' && conversationId) body2.conversation = { id: conversationId };
-        const res2 = await fetch('https://api.openai.com/v1/responses', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify(body2)
-        });
-        if (res2.ok) {
-          const data2 = await res2.json();
-          if (data2?.conversation?.id) conversationId = data2.conversation.id;
-          else if (data2?.conversation_id) conversationId = data2.conversation_id;
-          const text2 = (data2?.output_text || data2?.output?.[0]?.content?.[0]?.text || '').trim();
-          if (text2) return text2;
         }
       } catch (e) {
         return null;
