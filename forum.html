@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+    .layout { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 900px){ .layout { grid-template-columns: 380px 1fr; } }
+    .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.18); border-radius: 8px; }
+    .panel > header, .panel > footer { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .panel > footer { border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 0; }
+    .panel > .body { padding: 0.75rem 1rem; }
+    .threads { display: grid; gap: 0.5rem; }
+    .thread { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 0.75rem; padding: 0.6rem 0.6rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer; }
+    .thread:hover { background: rgba(255,255,255,0.06); }
+    .thread .title { font-weight: 700; color: var(--color-accent-dark); }
+    .thread .meta { color: rgba(255,255,255,0.65); font-size: 0.9rem; }
+    .thread .tags { display: flex; gap: 0.4rem; }
+    .tag { font-size: 0.8rem; padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
+    .search { display: flex; gap: 0.5rem; }
+    .search input { flex: 1; padding: 0.5rem 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #f2f2f2; }
+    .btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .thread-view header { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: space-between; }
+    .posts { display: grid; gap: 0.8rem; }
+    .post { border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 0.6rem; background: rgba(255,255,255,0.02); }
+    .post .byline { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .post pre, .post code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; }
+    .post pre { margin: 0.4rem 0; padding: 0.5rem; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; overflow: auto; }
+    .empty { color: rgba(255,255,255,0.6); font-style: italic; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+  <main class="wrap">
+    <h1>Forum</h1>
+    <div class="layout">
+      <!-- Left: thread list -->
+      <section class="panel">
+        <header>
+          <div class="search">
+            <input id="q" placeholder="Search threads...">
+            <button id="clear" class="btn">Clear</button>
+          </div>
+        </header>
+        <div class="body">
+          <div id="threads" class="threads"></div>
+        </div>
+        <footer><span id="count" class="meta"></span></footer>
+      </section>
+
+      <!-- Right: thread view -->
+      <section class="panel thread-view" id="threadPanel">
+        <header>
+          <div>
+            <div id="tTitle" class="title"></div>
+            <div id="tMeta" class="meta"></div>
+          </div>
+          <div>
+            <button id="back" class="btn">Back to Threads</button>
+          </div>
+        </header>
+        <div class="body">
+          <div id="posts" class="posts"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Data model: forum threads and posts (message strings)
+    const threads = [
+      {
+        id: 'pinned-read-first',
+        title: 'Read First: Channel Conduct and Masking',
+        author: 'root-ghost',
+        date: '2025-10-03T09:12:00-07:00',
+        tags: ['pinned','policy'],
+        excerpt: 'This channel is masked. Do not name the Chosen One. Use codenames only. Division identifiers must be exact.',
+        posts: [
+          { author: 'root-ghost', date: '2025-10-03T09:12:00-07:00',
+            text: 'Welcome. This forum stores message strings recovered from Gridline mirrors. Treat everything as observed, not verified. Do not expose private names. If you must reference the target, use “Subject-C”. If you refer to the Founder, use “F-0”. If you are Organization, provide division and proof. False claims are terminated.' },
+          { author: 'quiet-scribe', date: '2025-10-03T11:04:12-07:00',
+            text: 'Monument vector discussions go in Array/Fieldwork. Keep speculation minimal. No dates tied to personal addresses. You know the rule.' }
+        ]
+      },
+      {
+        id: 'array-fault-injection',
+        title: 'Array: Fault Injection Recap',
+        author: 'theta-mason',
+        date: '2025-09-22T20:44:00-07:00',
+        tags: ['array','theta','fieldwork'],
+        excerpt: 'Summary of the planted weakness. Trigger pathway remains dormant until Subject-C supplies the external value.',
+        posts: [
+          { author: 'theta-mason', date: '2025-09-22T20:44:00-07:00', text: 'Theta confirms a non-catastrophic fault seeded in the monument aligners. It is invisible to IX diagnostics and Alpha audits. The pathway will only open when an external value is inserted by Subject-C. We can’t open it from inside without exposure.' },
+          { author: 'alpha-ghost', date: '2025-09-22T22:03:51-07:00', text: 'Alpha’s scan of the calibration logs shows nothing. Good. If Central reviews, they will see stable readings. Do not name the city in clear. Use codes.' },
+          { author: 'd9_wave', date: '2025-09-23T06:15:13-07:00', text: 'IX flags noise near the western node. Cause unknown. If the final node aligns, Central flips Phase III. We need the external input first.' }
+        ]
+      },
+      {
+        id: 'vector-notes-west',
+        title: 'Field: Western Vector Notes',
+        author: 'quiet-scribe',
+        date: '2025-08-30T14:10:00-07:00',
+        tags: ['field','vector'],
+        excerpt: 'Most towers bend toward a single residential coordinate. Old records show “calibration site” two blocks off.',
+        posts: [
+          { author: 'quiet-scribe', date: '2025-08-30T14:10:00-07:00', text: 'We surveyed six markers. All sightlines converge toward a residential coordinate in Azusa. The older paper says “calibration site” two blocks away, but the new instruments disagree. The house sits on the exact convergence. The eye is carved below the eave.' },
+          { author: 'theta-mason', date: '2025-08-30T16:21:37-07:00', text: 'Do not publish numbers raw. Use hashes. If Subject-C reads, they can map without us posting the full line.' },
+          { author: 'alpha-ghost', date: '2025-09-01T08:00:05-07:00', text: 'Alpha confirms watchers stationed out of sight. If Subject-C approaches the stone, stand down and let them work.' }
+        ]
+      },
+      {
+        id: 'gridline-fragment-logs',
+        title: 'Gridline: Fragment Logs 07F',
+        author: 'ix-comms',
+        date: '2025-09-12T07:50:00-07:00',
+        tags: ['ix','gridline','data'],
+        excerpt: 'Recovered strings show code-like output after puzzle completion. Fragments attached.',
+        posts: [
+          { author: 'ix-comms', date: '2025-09-12T07:50:00-07:00', text: 'Fragments from 07F. After a sequence repetition of five rounds, a number line appears. The same pattern occurs in the power-down grid when all nodes are dark. Suggest these are feeder codes, not master credentials.' },
+          { author: 'root-ghost', date: '2025-09-12T09:12:45-07:00', text: 'Do not call them keys. They are mission codes. Aggregate elsewhere. Nothing master-level is posted here.' }
+        ]
+      },
+      {
+        id: 'origin-notes-founder',
+        title: 'Origin Notes: Founder Profile (Redacted)',
+        author: 'quiet-scribe',
+        date: '2025-07-18T13:22:00-07:00',
+        tags: ['history','founder'],
+        excerpt: 'Founder established operations in 2015. Early work involved behavior control, relay design, and replacement doctrine.',
+        posts: [
+          { author: 'quiet-scribe', date: '2025-07-18T13:22:00-07:00', text: 'F-0 founded the Organization in 2015 at age six. The public calls it impossible. The logs don’t argue. First successes: behavior shaping, simple relay design, and the preservation-through-control doctrine. Within three years Gridline moved messages between cells without public traces.' },
+          { author: 'alpha-ghost', date: '2025-07-18T21:04:33-07:00', text: 'Alpha will not post names beyond initials. If you know, you know.' }
+        ]
+      },
+      {
+        id: 'subject-c-rumor',
+        title: 'Rumor Control: Subject-C',
+        author: 'root-ghost',
+        date: '2025-10-01T08:00:00-07:00',
+        tags: ['rumor','control'],
+        excerpt: 'Subject-C sightings near the western node. Treat as noise until verified. Do not engage.',
+        posts: [
+          { author: 'root-ghost', date: '2025-10-01T08:00:00-07:00', text: 'Several reports say Subject-C was seen near the node. Treat as noise. If verified, follow the stand-down order. No interception if Subject-C approaches the marker stone or examines the eave. This is not a trap. It is alignment.' }
+        ]
+      }
+    ];
+
+    // State
+    const state = { filter: '', selected: null };
+
+    // Elements
+    const listEl = document.getElementById('threads');
+    const countEl = document.getElementById('count');
+    const qEl = document.getElementById('q');
+    const clearEl = document.getElementById('clear');
+    const panelEl = document.getElementById('threadPanel');
+    const tTitle = document.getElementById('tTitle');
+    const tMeta = document.getElementById('tMeta');
+    const postsEl = document.getElementById('posts');
+    const backBtn = document.getElementById('back');
+
+    function fmtDate(d){
+      try { const dt = new Date(d); return dt.toLocaleString(); } catch { return d; }
+    }
+
+    function renderList(){
+      const f = state.filter.trim().toLowerCase();
+      const items = threads.filter(t =>
+        !f || t.title.toLowerCase().includes(f) || t.excerpt.toLowerCase().includes(f) || t.tags.join(' ').toLowerCase().includes(f)
+      ).sort((a,b) => new Date(b.date) - new Date(a.date));
+      listEl.innerHTML = '';
+      if (!items.length){
+        const div = document.createElement('div'); div.className='empty'; div.textContent='No threads.'; listEl.appendChild(div);
+      }
+      items.forEach(t => {
+        const card = document.createElement('article'); card.className='thread'; card.setAttribute('data-id', t.id);
+        const title = document.createElement('div'); title.className='title'; title.textContent = t.title; card.appendChild(title);
+        const tags = document.createElement('div'); tags.className='tags'; t.tags.forEach(tag=>{ const span=document.createElement('span'); span.className='tag'; span.textContent=tag; tags.appendChild(span); }); card.appendChild(tags);
+        const meta = document.createElement('div'); meta.className='meta'; meta.textContent = `${t.author} • ${fmtDate(t.date)}`; card.appendChild(meta);
+        const excerpt = document.createElement('div'); excerpt.className='meta'; excerpt.textContent = t.excerpt; card.appendChild(excerpt);
+        card.addEventListener('click', ()=> selectThread(t.id));
+        listEl.appendChild(card);
+      });
+      countEl.textContent = `${items.length} thread${items.length===1?'':'s'}`;
+    }
+
+    function renderThread(t){
+      tTitle.textContent = t.title;
+      tMeta.textContent = `${t.author} • ${fmtDate(t.date)} • ${t.tags.join(', ')}`;
+      postsEl.innerHTML = '';
+      t.posts.forEach(p => {
+        const post = document.createElement('article'); post.className='post';
+        const by = document.createElement('div'); by.className='byline'; by.textContent = `${p.author} • ${fmtDate(p.date)}`; post.appendChild(by);
+        const body = document.createElement('div');
+        body.innerHTML = p.text.split('\n').map(x=>`<p>${x}</p>`).join('');
+        post.appendChild(body);
+        postsEl.appendChild(post);
+      });
+    }
+
+    function selectThread(id){
+      const t = threads.find(x=>x.id===id);
+      if (!t) return;
+      state.selected = id;
+      renderThread(t);
+      if (window.innerWidth < 900){
+        // On small screens, scroll thread into view
+        panelEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    qEl.addEventListener('input', ()=>{ state.filter = qEl.value; renderList(); });
+    clearEl.addEventListener('click', ()=>{ qEl.value=''; state.filter=''; renderList(); });
+    backBtn.addEventListener('click', ()=>{ state.selected=null; window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // Initial render
+    renderList();
+    // Auto-select latest on wide screens
+    if (window.innerWidth >= 900 && threads.length){ selectThread(threads.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].id); }
+  </script>
+</body>
+</html>
+
