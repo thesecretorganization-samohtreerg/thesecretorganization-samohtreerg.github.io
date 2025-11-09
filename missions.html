@@ -14,7 +14,7 @@
         @media (min-width: 900px){ .missions-grid { grid-template-columns: 1fr 1fr; } }
         .mission { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
         .mission h3 { margin: 0 0 0.25rem 0; color: var(--color-accent-dark); }
-        .mission small { color: rgba(255,255,255,0.6); }
+        .mission small { color: rgb(175, 150, 150); }
         .mission .controls { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }
         .mission .status { font-weight: bold; color: var(--color-accent-dark); }
         .mission .complete { color: #7CFC00; }
@@ -28,7 +28,7 @@
         .btn:hover { background: rgba(255,255,255,0.12); }
         a.btn-link { display: inline-block; text-decoration: none; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; }
         a.btn-link:hover { background: rgba(255,255,255,0.12); }
-        .hint { color: rgba(255,255,255,0.65); font-size: 0.95rem; }
+        .hint { color: rgb(175, 150, 150);; font-size: 0.95rem; }
         .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
         .block { background: rgba(0,0,0,0.35); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
         .pill { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 999px; background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.25); }
@@ -152,7 +152,7 @@
 
     <main>
         <h1>Missions</h1>
-        <p class="hint">These are assignments issued by The Organization. Completion is appreciated. Each successful action yields a four digit number. Keep those secured.</p>
+        <p>These are assignments issued by The Organization. Completion is appreciated. Each successful action yields a four digit number. Keep those secured.</p>
         <p class="pill" id="mission-progress">0 / 6 complete</p>
 
         <div class="missions-grid">
@@ -161,7 +161,7 @@
             <section class="mission" data-mission="m1">
                 <h3>Mission 1: Excavation Directive</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Recover the strip from the yard. Maintain cover.</p>
+                <p>Recover the strip from the yard. Maintain cover.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -182,7 +182,7 @@
             <section class="mission" data-mission="m2">
                 <h3>Mission 2: Payload Conversion</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Acquire the payload and extract the information.</p>
+                <p>Acquire the payload and extract the information.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -202,7 +202,7 @@
             <section class="mission" data-mission="m3">
                 <h3>Mission 3: Grid Deactivation</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Power down the grid. When the field clears, the code appears.</p>
+                <p>Power down the grid. When the field clears, the code appears.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -222,7 +222,7 @@
             <section class="mission" data-mission="m4">
                 <h3>Mission 4: Sequence Lock</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Calibrate to the lock's pattern.</p>
+                <p>Calibrate to the lock's pattern.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -242,7 +242,7 @@
             <section class="mission" data-mission="m5">
                 <h3>Mission 5: Signal Decode</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Intercepted binary signal fragment. Recover the digits.</p>
+                <p>Intercepted binary signal fragment. Recover the digits.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -261,7 +261,7 @@
             <section class="mission" data-mission="m6">
                 <h3>Mission 6: Unknown Channel</h3>
                 <small>Status: <span class="status">Incomplete</span></small>
-                <p class="hint">Open a masked channel and obtain the key.</p>
+                <p>Open a masked channel and obtain the key.</p>
                 <button class="menu-toggle base" style="margin-top:0.5rem;">More Information</button>
                 <ul class="menu">
                     <li>
@@ -280,7 +280,7 @@
         </div>
 
         <section style="margin-top:1.25rem;">
-            <p class="hint">Note: Completed missions persist on this device. When the work is complete, proceed to Internal Access.</p>
+            <p>Note: Completed missions persist on this device. When the work is complete, proceed to Internal Access.</p>
         </section>
     </main>
 
