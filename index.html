@@ -229,6 +229,37 @@
     <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
 
     <script>
+        const dangerPage = `
+            <!DOCTYPE html>
+            <html lang="en">
+
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Danger | The Organization</title>
+                <link rel="icon" type="image/png" href="icon.png">
+                <link rel="stylesheet" href="style.css">
+            </head>
+
+            <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh">
+
+                <img src="icon.png" style="width: 80%; max-width: 1000px;">
+                <h1>we are always watching</h1>
+                <audio src="./scary-ambience.mp3" autoplay></audio>
+
+            </body>
+
+            <script>
+                // When the user presses back:
+                window.addEventListener("popstate", () => {
+                    // Reload or restore the original page
+                    location.reload();
+                });
+            <\/script>
+
+            </html>
+        `;
+
         // Redirect to danger when icon animation goes too long
         const icons = document.querySelectorAll('.top-icon-container');
         const scaryBuildup = new Audio('./scary-buildup.wav');
@@ -237,7 +268,10 @@
                 scaryBuildup.play();
                 icon.classList.add('active');
                 setTimeout(() => {
-                    window.location.href = 'danger.html';
+                    history.pushState({}, "", location.href); // add undo point
+                    document.open();
+                    document.write(dangerPage);
+                    document.close();
                 }, 8000);
             });
         });
