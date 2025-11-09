@@ -10,46 +10,11 @@
 </head>
 
 <body>
-    <!-- Top Nav (matches index.html structure) -->
-    <nav class="multipart">
-        <div class="nav-start">
-            <div class="top-icon-container">
-                <div class="top-icon-rotation">
-                    <img class="top-icon" src="icon.png" alt="Organization Icon">
-                </div>
-            </div>
-            <p style="margin-left: 30px; min-width: 130px"><strong>
-                    <span class="line">Event Initiation Countdown: </span>
-                    <span class="timer line">Loading...</span>
-                </strong></p>
-        </div>
-
-        <div class="nav-center">
-            <a href="index.html">Home</a>
-            <a href="missions.html">Missions</a>
-            <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="forum.html">Forum</a>
-        </div>
-
-        <div class="nav-end">
-            <div>
-                <button class="menu-toggle floating-menu-toggle">Menu</button>
-                <ul class="menu floating-menu">
-                    <!-- Navigation -->
-                    <li class="menu-item"><a href="index.html">Home</a></li>
-                    <li class="menu-item"><a href="missions.html">Missions</a></li>
-                    <li class="menu-item"><a href="about.html">About</a></li>
-                    <li class="menu-item"><a href="contact.html">Contact</a></li>
-                    <li class="menu-item"><a href="forum.html">Forum</a></li>
-                    <li class="menu-item"><a href="internal.html">Internal Access</a></li>
-                    <li class="menu-item hidden" id="internal2"><a href="internal2.html">Internal Access 2</a></li>
-                </ul>
-            </div>
-        </div>
+    <nav>
+        <a href="index.html">Home</a>
     </nav>
 
-    <h1>Community Forum</h1>
+    <h1>Forum</h1>
     <main style="max-width: 900px;">
         <!-- Forum List View -->
         <section id="forum-list-view">
@@ -95,18 +60,6 @@
             </div>
         </section>
     </main>
-
-    <footer>
-        <h3>The Foundation</h3>
-        <p>Est. 2015 | For Order, For Continuity, For the Future.</p>
-        <p>© The Organization | Internal Use Only</p>
-        <button class="floating-menu-toggle menu-toggle upward" style="max-width: 80px;">???</button>
-        <ul id="deep-menu" class="floating-menu menu upward">
-            <li class="menu-item">
-                <h4>You shouldn't be here.</h4>
-            </li>
-        </ul>
-    </footer>
 
     <!-- Floating Icons -->
     <img src="icon.png" class="icon" style="top:10%; left:5%;">
@@ -353,84 +306,6 @@
             threadView.classList.add('hidden');
             listView.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        /*****************************************
-         * Countdown timer (copied behavior)
-         *****************************************/
-        const countdownDate = new Date('2025-11-10').getTime(); // match index.html
-        const timerElements = document.querySelectorAll('.timer');
-        const updateTimer = () => {
-            const now = new Date().getTime();
-            const distance = countdownDate - now;
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            timerElements.forEach(elm => {
-                elm.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            });
-        };
-        setInterval(updateTimer, 1000);
-        updateTimer();
-
-        /*****************************************
-         * Minimal floating menu behavior (no collapsible forum rows)
-         *****************************************/
-        const floatingToggle = document.querySelector('.floating-menu-toggle');
-        const floatingMenu = document.querySelector('.floating-menu');
-        floatingToggle?.addEventListener('click', () => {
-            if (floatingMenu.classList.contains('open')) {
-                floatingMenu.classList.remove('open');
-                floatingMenu.style.maxHeight = 0;
-            } else {
-                floatingMenu.classList.add('open');
-                floatingMenu.style.maxHeight = '500px';
-            }
-        });
-
-        // Deep menu playful expansion
-        const deepMenu = document.getElementById("deep-menu");
-        const deepMessages = [
-            { message: 'Do not.', button: 'More' },
-            { message: 'Stop.', button: 'More' },
-            { message: 'Turn back.', button: 'More' },
-            { message: 'Don\'t open.', button: 'More' },
-            { message: 'Click off.', button: 'More' },
-            { message: 'Go away.', button: 'More' },
-            { message: 'Don\'t look', button: 'More' },
-            { message: 'Close this menu.', button: 'More' },
-        ];
-        const deepMenuChildren = [...deepMenu.children];
-        let menu = deepMenu;
-        for (const { message, button } of deepMessages) {
-            menu.innerHTML = `
-        <li class="menu-item"><h4>${message}</h4></li>
-        <li class="menu-item">
-          <button class="menu-toggle">${button}</button>
-          <ul class="menu"></ul>
-        </li>
-      `;
-            menu = menu.querySelector('.menu');
-        };
-        menu.append(...deepMenuChildren);
-
-        // Reveal internal2 if set in storage (kept from index behavior)
-        const internal2 = document.getElementById('internal2');
-        function restore() {
-            try {
-                const v = localStorage.getItem('org_internal_total_v1');
-                if (v) internal2.classList.remove('hidden');
-            } catch (e) { }
-        }
-        restore();
-
-        // Top icon click easter egg (non-destructive here)
-        const icons = document.querySelectorAll('.top-icon-container');
-        icons.forEach(icon => {
-            icon.addEventListener('click', () => {
-                icon.classList.add('active');
-            });
         });
     </script>
 </body>
