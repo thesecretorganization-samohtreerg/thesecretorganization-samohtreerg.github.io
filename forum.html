@@ -1,231 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forum | The Organization</title>
-  <link rel="icon" type="image/png" href="icon.png">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
-    .layout { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 900px){ .layout { grid-template-columns: 380px 1fr; } }
-    .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.18); border-radius: 8px; }
-    .panel > header, .panel > footer { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .panel > footer { border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 0; }
-    .panel > .body { padding: 0.75rem 1rem; }
-    .threads { display: grid; gap: 0.5rem; }
-    .thread { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 0.75rem; padding: 0.6rem 0.6rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; background: rgba(255,255,255,0.02); cursor: pointer; }
-    .thread:hover { background: rgba(255,255,255,0.06); }
-    .thread .title { font-weight: 700; color: var(--color-accent-dark); }
-    .thread .meta { color: rgba(255,255,255,0.65); font-size: 0.9rem; }
-    .thread .tags { display: flex; gap: 0.4rem; }
-    .tag { font-size: 0.8rem; padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
-    .search { display: flex; gap: 0.5rem; }
-    .search input { flex: 1; padding: 0.5rem 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06); color: #f2f2f2; }
-    .btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18); padding: 0.45rem 0.8rem; border-radius: 6px; cursor: pointer; }
-    .btn:hover { background: rgba(255,255,255,0.12); }
-    .thread-view header { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: space-between; }
-    .posts { display: grid; gap: 0.8rem; }
-    .post { border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 0.6rem; background: rgba(255,255,255,0.02); }
-    .post .byline { color: rgba(255,255,255,0.65); font-size: 0.9rem; margin-bottom: 0.25rem; }
-    .post pre, .post code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; }
-    .post pre { margin: 0.4rem 0; padding: 0.5rem; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; overflow: auto; }
-    .empty { color: rgba(255,255,255,0.6); font-style: italic; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forum | The Organization</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="icon.png" />
 </head>
+
 <body>
-  <nav>
-    <a href="index.html">Home</a>
-  </nav>
-  <main class="wrap">
-    <h1>Forum</h1>
-    <div class="layout">
-      <!-- Left: thread list -->
-      <section class="panel">
-        <header>
-          <div class="search">
-            <input id="q" placeholder="Search threads...">
-            <button id="clear" class="btn">Clear</button>
-          </div>
-        </header>
-        <div class="body">
-          <div id="threads" class="threads"></div>
+    <!-- Top Nav (matches index.html structure) -->
+    <nav class="multipart">
+        <div class="nav-start">
+            <div class="top-icon-container">
+                <div class="top-icon-rotation">
+                    <img class="top-icon" src="icon.png" alt="Organization Icon">
+                </div>
+            </div>
+            <p style="margin-left: 30px; min-width: 130px"><strong>
+                    <span class="line">Event Initiation Countdown: </span>
+                    <span class="timer line">Loading...</span>
+                </strong></p>
         </div>
-        <footer><span id="count" class="meta"></span></footer>
-      </section>
 
-      <!-- Right: thread view -->
-      <section class="panel thread-view" id="threadPanel">
-        <header>
-          <div>
-            <div id="tTitle" class="title"></div>
-            <div id="tMeta" class="meta"></div>
-          </div>
-          <div>
-            <button id="back" class="btn">Back to Threads</button>
-          </div>
-        </header>
-        <div class="body">
-          <div id="posts" class="posts"></div>
+        <div class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="missions.html">Missions</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="forum.html">Forum</a>
         </div>
-      </section>
-    </div>
-  </main>
 
-  <script>
-    // Data model: forum threads and posts (message strings)
-    const threads = [
-      {
-        id: 'pinned-read-first',
-        title: 'Read First: Channel Conduct and Masking',
-        author: 'root-ghost',
-        date: '2025-10-03T09:12:00-07:00',
-        tags: ['pinned','policy'],
-        excerpt: 'This channel is masked. Do not name the Chosen One. Use codenames only. Division identifiers must be exact.',
-        posts: [
-          { author: 'root-ghost', date: '2025-10-03T09:12:00-07:00',
-            text: 'Welcome. This forum stores message strings recovered from Gridline mirrors. Treat everything as observed, not verified. Do not expose private names. If you must reference the target, use “Subject-C”. If you refer to the Founder, use “F-0”. If you are Organization, provide division and proof. False claims are terminated.' },
-          { author: 'quiet-scribe', date: '2025-10-03T11:04:12-07:00',
-            text: 'Monument vector discussions go in Array/Fieldwork. Keep speculation minimal. No dates tied to personal addresses. You know the rule.' }
-        ]
-      },
-      {
-        id: 'array-fault-injection',
-        title: 'Array: Fault Injection Recap',
-        author: 'theta-mason',
-        date: '2025-09-22T20:44:00-07:00',
-        tags: ['array','theta','fieldwork'],
-        excerpt: 'Summary of the planted weakness. Trigger pathway remains dormant until Subject-C supplies the external value.',
-        posts: [
-          { author: 'theta-mason', date: '2025-09-22T20:44:00-07:00', text: 'Theta confirms a non-catastrophic fault seeded in the monument aligners. It is invisible to IX diagnostics and Alpha audits. The pathway will only open when an external value is inserted by Subject-C. We can’t open it from inside without exposure.' },
-          { author: 'alpha-ghost', date: '2025-09-22T22:03:51-07:00', text: 'Alpha’s scan of the calibration logs shows nothing. Good. If Central reviews, they will see stable readings. Do not name the city in clear. Use codes.' },
-          { author: 'd9_wave', date: '2025-09-23T06:15:13-07:00', text: 'IX flags noise near the western node. Cause unknown. If the final node aligns, Central flips Phase III. We need the external input first.' }
-        ]
-      },
-      {
-        id: 'vector-notes-west',
-        title: 'Field: Western Vector Notes',
-        author: 'quiet-scribe',
-        date: '2025-08-30T14:10:00-07:00',
-        tags: ['field','vector'],
-        excerpt: 'Most towers bend toward a single residential coordinate. Old records show “calibration site” two blocks off.',
-        posts: [
-          { author: 'quiet-scribe', date: '2025-08-30T14:10:00-07:00', text: 'We surveyed six markers. All sightlines converge toward a residential coordinate in Azusa. The older paper says “calibration site” two blocks away, but the new instruments disagree. The house sits on the exact convergence. The eye is carved below the eave.' },
-          { author: 'theta-mason', date: '2025-08-30T16:21:37-07:00', text: 'Do not publish numbers raw. Use hashes. If Subject-C reads, they can map without us posting the full line.' },
-          { author: 'alpha-ghost', date: '2025-09-01T08:00:05-07:00', text: 'Alpha confirms watchers stationed out of sight. If Subject-C approaches the stone, stand down and let them work.' }
-        ]
-      },
-      {
-        id: 'gridline-fragment-logs',
-        title: 'Gridline: Fragment Logs 07F',
-        author: 'ix-comms',
-        date: '2025-09-12T07:50:00-07:00',
-        tags: ['ix','gridline','data'],
-        excerpt: 'Recovered strings show code-like output after puzzle completion. Fragments attached.',
-        posts: [
-          { author: 'ix-comms', date: '2025-09-12T07:50:00-07:00', text: 'Fragments from 07F. After a sequence repetition of five rounds, a number line appears. The same pattern occurs in the power-down grid when all nodes are dark. Suggest these are feeder codes, not master credentials.' },
-          { author: 'root-ghost', date: '2025-09-12T09:12:45-07:00', text: 'Do not call them keys. They are mission codes. Aggregate elsewhere. Nothing master-level is posted here.' }
-        ]
-      },
-      {
-        id: 'origin-notes-founder',
-        title: 'Origin Notes: Founder Profile (Redacted)',
-        author: 'quiet-scribe',
-        date: '2025-07-18T13:22:00-07:00',
-        tags: ['history','founder'],
-        excerpt: 'Founder established operations in 2015. Early work involved behavior control, relay design, and replacement doctrine.',
-        posts: [
-          { author: 'quiet-scribe', date: '2025-07-18T13:22:00-07:00', text: 'F-0 founded the Organization in 2015 at age six. The public calls it impossible. The logs don’t argue. First successes: behavior shaping, simple relay design, and the preservation-through-control doctrine. Within three years Gridline moved messages between cells without public traces.' },
-          { author: 'alpha-ghost', date: '2025-07-18T21:04:33-07:00', text: 'Alpha will not post names beyond initials. If you know, you know.' }
-        ]
-      },
-      {
-        id: 'subject-c-rumor',
-        title: 'Rumor Control: Subject-C',
-        author: 'root-ghost',
-        date: '2025-10-01T08:00:00-07:00',
-        tags: ['rumor','control'],
-        excerpt: 'Subject-C sightings near the western node. Treat as noise until verified. Do not engage.',
-        posts: [
-          { author: 'root-ghost', date: '2025-10-01T08:00:00-07:00', text: 'Several reports say Subject-C was seen near the node. Treat as noise. If verified, follow the stand-down order. No interception if Subject-C approaches the marker stone or examines the eave. This is not a trap. It is alignment.' }
-        ]
-      }
-    ];
+        <div class="nav-end">
+            <div>
+                <button class="menu-toggle floating-menu-toggle">Menu</button>
+                <ul class="menu floating-menu">
+                    <!-- Navigation -->
+                    <li class="menu-item"><a href="index.html">Home</a></li>
+                    <li class="menu-item"><a href="missions.html">Missions</a></li>
+                    <li class="menu-item"><a href="about.html">About</a></li>
+                    <li class="menu-item"><a href="contact.html">Contact</a></li>
+                    <li class="menu-item"><a href="forum.html">Forum</a></li>
+                    <li class="menu-item"><a href="internal.html">Internal Access</a></li>
+                    <li class="menu-item hidden" id="internal2"><a href="internal2.html">Internal Access 2</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    // State
-    const state = { filter: '', selected: null };
+    <h1>Community Forum</h1>
+    <main style="max-width: 900px;">
+        <!-- Forum List View -->
+        <section id="forum-list-view">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                <input id="searchInput" type="search" placeholder="Search threads..."
+                    style="flex:1; padding:10px; background:#200; border:1px solid #500; color:#fdd; font-family: serif;">
+                <button id="clearSearch" class="btn">Clear</button>
+            </div>
 
-    // Elements
-    const listEl = document.getElementById('threads');
-    const countEl = document.getElementById('count');
-    const qEl = document.getElementById('q');
-    const clearEl = document.getElementById('clear');
-    const panelEl = document.getElementById('threadPanel');
-    const tTitle = document.getElementById('tTitle');
-    const tMeta = document.getElementById('tMeta');
-    const postsEl = document.getElementById('posts');
-    const backBtn = document.getElementById('back');
+            <div class="hint small" style="margin-bottom: 10px;">
+                Browsing archived discussions. Posting is disabled due to prolonged inactivity.
+            </div>
 
-    function fmtDate(d){
-      try { const dt = new Date(d); return dt.toLocaleString(); } catch { return d; }
-    }
+            <div id="threadTable" class="mission">
+                <!-- Populated by JS -->
+            </div>
+        </section>
 
-    function renderList(){
-      const f = state.filter.trim().toLowerCase();
-      const items = threads.filter(t =>
-        !f || t.title.toLowerCase().includes(f) || t.excerpt.toLowerCase().includes(f) || t.tags.join(' ').toLowerCase().includes(f)
-      ).sort((a,b) => new Date(b.date) - new Date(a.date));
-      listEl.innerHTML = '';
-      if (!items.length){
-        const div = document.createElement('div'); div.className='empty'; div.textContent='No threads.'; listEl.appendChild(div);
-      }
-      items.forEach(t => {
-        const card = document.createElement('article'); card.className='thread'; card.setAttribute('data-id', t.id);
-        const title = document.createElement('div'); title.className='title'; title.textContent = t.title; card.appendChild(title);
-        const tags = document.createElement('div'); tags.className='tags'; t.tags.forEach(tag=>{ const span=document.createElement('span'); span.className='tag'; span.textContent=tag; tags.appendChild(span); }); card.appendChild(tags);
-        const meta = document.createElement('div'); meta.className='meta'; meta.textContent = `${t.author} • ${fmtDate(t.date)}`; card.appendChild(meta);
-        const excerpt = document.createElement('div'); excerpt.className='meta'; excerpt.textContent = t.excerpt; card.appendChild(excerpt);
-        card.addEventListener('click', ()=> selectThread(t.id));
-        listEl.appendChild(card);
-      });
-      countEl.textContent = `${items.length} thread${items.length===1?'':'s'}`;
-    }
+        <!-- Thread View -->
+        <section id="thread-view" class="hidden">
+            <button id="backBtn" class="btn" style="margin-bottom:14px;">← Back to Main Page</button>
+            <article id="threadHeader" class="mission" style="margin-bottom: 14px;">
+                <!-- Filled by JS -->
+            </article>
 
-    function renderThread(t){
-      tTitle.textContent = t.title;
-      tMeta.textContent = `${t.author} • ${fmtDate(t.date)} • ${t.tags.join(', ')}`;
-      postsEl.innerHTML = '';
-      t.posts.forEach(p => {
-        const post = document.createElement('article'); post.className='post';
-        const by = document.createElement('div'); by.className='byline'; by.textContent = `${p.author} • ${fmtDate(p.date)}`; post.appendChild(by);
-        const body = document.createElement('div');
-        body.innerHTML = p.text.split('\n').map(x=>`<p>${x}</p>`).join('');
-        post.appendChild(body);
-        postsEl.appendChild(post);
-      });
-    }
+            <div id="postList">
+                <!-- Posts populated by JS -->
+            </div>
 
-    function selectThread(id){
-      const t = threads.find(x=>x.id===id);
-      if (!t) return;
-      state.selected = id;
-      renderThread(t);
-      if (window.innerWidth < 900){
-        // On small screens, scroll thread into view
-        panelEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
+            <!-- Locked compose area -->
+            <div class="mission" style="margin-top: 18px;">
+                <div class="glow-text" style="margin-bottom:8px;">
+                    Thread locked due to inactivity — replying disabled.
+                </div>
+                <label class="small" for="lockedText">Reply</label>
+                <textarea id="lockedText" rows="4" placeholder="You cannot reply to this thread."
+                    style="width:100%; background:#100; color:#c99; border:1px solid #400; padding:8px;"
+                    disabled></textarea>
+                <div style="margin-top: 10px; display:flex; gap:8px;">
+                    <button class="btn" disabled>Post Reply</button>
+                    <span class="small">This forum is read-only. Contact an administrator to reopen.</span>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    qEl.addEventListener('input', ()=>{ state.filter = qEl.value; renderList(); });
-    clearEl.addEventListener('click', ()=>{ qEl.value=''; state.filter=''; renderList(); });
-    backBtn.addEventListener('click', ()=>{ state.selected=null; window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    <footer>
+        <h3>The Foundation</h3>
+        <p>Est. 2015 | For Order, For Continuity, For the Future.</p>
+        <p>© The Organization | Internal Use Only</p>
+        <button class="floating-menu-toggle menu-toggle upward" style="max-width: 80px;">???</button>
+        <ul id="deep-menu" class="floating-menu menu upward">
+            <li class="menu-item">
+                <h4>You shouldn't be here.</h4>
+            </li>
+        </ul>
+    </footer>
 
-    // Initial render
-    renderList();
-    // Auto-select latest on wide screens
-    if (window.innerWidth >= 900 && threads.length){ selectThread(threads.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].id); }
-  </script>
+    <!-- Floating Icons -->
+    <img src="icon.png" class="icon" style="top:10%; left:5%;">
+    <img src="icon.png" class="icon" style="top:60%; left:20%;">
+    <img src="icon.png" class="icon" style="top:30%; right:10%;">
+    <img src="icon.png" class="icon" style="bottom:15%; right:25%;">
+
+    <script>
+        /*****************************************
+         * Editable Data (threads & posts)
+         *****************************************/
+        const FORUM_DATA = {
+            forumLocked: true, // global lock indicator (UI is read-only regardless)
+            threads: [
+                {
+                    id: "t-awakening-delays",
+                    title: "Alignment Node 9: Why the Delay?",
+                    createdBy: "Observer_Theta",
+                    createdAt: "2025-06-28 14:22",
+                    lastActivity: "2025-07-11 09:03",
+                    views: 1842,
+                    replies: 7,
+                    tags: ["Operations", "Awakening"],
+                    posts: [
+                        {
+                            user: "Observer_Theta",
+                            postedAt: "2025-06-28 14:22",
+                            body: "Division IX reports stable readings, but the final convergence keeps slipping. Anyone else seeing anomalous interference around Glendora sector?"
+                        },
+                        {
+                            user: "Redline",
+                            postedAt: "2025-06-28 15:01",
+                            body: "Field chatter blames the so-called 'Chosen One.' More likely a calibration fault. Re-run the tower sync in off-peak grid hours."
+                        },
+                        {
+                            user: "Archivist",
+                            postedAt: "2025-06-28 16:44",
+                            body: "Historical records: Node 9 was always the outlier. Spec states redundancy requires 2.8% tolerance but we are flirting with 3.1%."
+                        },
+                        {
+                            user: "Echo",
+                            postedAt: "2025-06-29 08:10",
+                            body: "Harmonics spike at dawn. Check for unnoticed antenna coupling with municipal installations."
+                        },
+                        {
+                            user: "Operator-4",
+                            postedAt: "2025-07-10 22:19",
+                            body: "Update: Silent mode deploy reduced noise floor. Awaiting green light from IX."
+                        },
+                        {
+                            user: "Founder’s Hand",
+                            postedAt: "2025-07-11 08:51",
+                            body: "Proceed per Directive. No public disturbances."
+                        },
+                        {
+                            user: "Echo",
+                            postedAt: "2025-07-11 09:03",
+                            body: "Copy. Standing by."
+                        }
+                    ]
+                },
+                {
+                    id: "t-rumors-rebellion",
+                    title: "Rumors of a Rebellion Thread (Megathread)",
+                    createdBy: "Archivist",
+                    createdAt: "2025-05-12 06:40",
+                    lastActivity: "2025-06-02 20:10",
+                    views: 3971,
+                    replies: 12,
+                    tags: ["Intelligence", "Public Relations"],
+                    posts: [
+                        { user: "Archivist", postedAt: "2025-05-12 06:40", body: "Collect reports of symbol sightings, encrypted pamphlets, recruitment whispers. Locales: Glendale, Glendora, Rialto." },
+                        { user: "Redline", postedAt: "2025-05-12 07:55", body: "Saw the eye symbol inverted on a substation fence. Poor stencil. Possibly copycats." },
+                        { user: "Shadow-K", postedAt: "2025-05-13 00:12", body: "Heard broadcasts in AM band near 1:17 a.m. repeating 'Nivlac watches.' Anyone else?" },
+                        { user: "Echo", postedAt: "2025-05-13 01:03", body: "Yes. Could be a loop off a cheap transmitter. Triangulation pending." },
+                        { user: "Observer_Theta", postedAt: "2025-05-15 09:24", body: "Two recruits intercepted at the rail yard. Both mentioned a 'return' event." },
+                        { user: "Courier", postedAt: "2025-05-20 12:11", body: "Package cleared. Contents: flyers, hand-drawn maps, a hand-carved token with the eye." },
+                        { user: "Founder’s Hand", postedAt: "2025-05-26 05:18", body: "Containment remains priority. Avoid public escalation." },
+                        { user: "Archivist", postedAt: "2025-06-02 20:10", body: "Consolidated all signals and artifacts into case file R-47." }
+                    ]
+                },
+                {
+                    id: "t-contact-protocols",
+                    title: "Contact Protocols Are Changing Again?",
+                    createdBy: "Courier",
+                    createdAt: "2025-03-03 11:18",
+                    lastActivity: "2025-03-05 18:02",
+                    views: 1220,
+                    replies: 5,
+                    tags: ["Operations"],
+                    posts: [
+                        { user: "Courier", postedAt: "2025-03-03 11:18", body: "New directive says curb all open-band messages. Shift to dead drops only. Confirm?" },
+                        { user: "Redline", postedAt: "2025-03-03 12:30", body: "Confirmed. Use the Glendora calibration site map for fresh coordinates." },
+                        { user: "Echo", postedAt: "2025-03-03 12:53", body: "Dead drop 3B relocated after public activity picked up." },
+                        { user: "Archivist", postedAt: "2025-03-05 09:41", body: "Records updated. See PR/Comms index." },
+                        { user: "Founder’s Hand", postedAt: "2025-03-05 18:02", body: "Follow the Directive without exception." }
+                    ]
+                },
+                {
+                    id: "t-offtopic",
+                    title: "Off-Topic: Favorite Signal Interference Jams",
+                    createdBy: "Echo",
+                    createdAt: "2025-02-14 21:03",
+                    lastActivity: "2025-02-14 23:50",
+                    views: 803,
+                    replies: 3,
+                    tags: ["Off-Topic"],
+                    posts: [
+                        { user: "Echo", postedAt: "2025-02-14 21:03", body: "When the grid hums just right, the world feels almost peaceful." },
+                        { user: "Redline", postedAt: "2025-02-14 22:17", body: "Add a little city rain and you’ve got a symphony." },
+                        { user: "Archivist", postedAt: "2025-02-14 23:50", body: "Don’t archive this. Or do. I won’t tell." }
+                    ]
+                }
+            ]
+        };
+
+        /*****************************************
+         * Utilities
+         *****************************************/
+        const el = (tag, attrs = {}, children = []) => {
+            const node = document.createElement(tag);
+            Object.entries(attrs).forEach(([k, v]) => {
+                if (k === 'class') node.className = v;
+                else if (k === 'dataset') Object.entries(v).forEach(([dk, dv]) => node.dataset[dk] = dv);
+                else if (k === 'html') node.innerHTML = v;
+                else node.setAttribute(k, v);
+            });
+            children.forEach(c => node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+            return node;
+        };
+
+        const formatDate = (s) => s; // Dates are already formatted in data; adjust if needed.
+
+        /*****************************************
+         * Render: Thread List
+         *****************************************/
+        const listView = document.getElementById('forum-list-view');
+        const tableWrap = document.getElementById('threadTable');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearch = document.getElementById('clearSearch');
+
+        function renderTable(threads) {
+            tableWrap.innerHTML = '';
+
+            const header = document.createElement('div');
+            header.className = 'small';
+            header.setAttribute('style', 'display:grid; grid-template-columns: 1fr 120px 120px 90px; gap:8px; padding:8px; border-bottom:1px solid #400;');
+            header.appendChild(el('div', { class: 'glow-text' }, ['Thread Title']));
+            header.appendChild(el('div', {}, ['Replies']));
+            header.appendChild(el('div', {}, ['Last Activity']));
+            header.appendChild(el('div', {}, ['Views']));
+            tableWrap.appendChild(header);
+
+            threads.forEach(t => {
+                const row = el('div', { class: 'menu-toggle base', style: 'display:grid; grid-template-columns: 1fr 120px 120px 90px; gap:8px; padding:8px; cursor:pointer; background:#1b0000; margin-top:6px;' });
+                const title = el('div', {}, []);
+                const titleLink = el('a', { href: '#', style: 'text-decoration:none; color:#c33;' }, []);
+                titleLink.textContent = t.title;
+                titleLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openThread(t.id);
+                });
+                title.appendChild(titleLink);
+
+                row.appendChild(title);
+                row.appendChild(el('div', {}, [String(t.replies)]));
+                row.appendChild(el('div', {}, [formatDate(t.lastActivity)]));
+                row.appendChild(el('div', {}, [String(t.views)]));
+
+                tableWrap.appendChild(row);
+
+                const meta = el('div', { class: 'small', style: 'padding:0 8px 8px 8px; color:#bbb;' }, [
+                    `Started by ${t.createdBy} on ${formatDate(t.createdAt)} — Tags: ${t.tags.join(', ')}`
+                ]);
+                tableWrap.appendChild(meta);
+            });
+
+            if (threads.length === 0) {
+                tableWrap.appendChild(el('div', { class: 'small', style: 'padding:10px;' }, ['No threads match your search.']));
+            }
+        }
+
+        function filterThreads(q) {
+            const query = q.trim().toLowerCase();
+            if (!query) return FORUM_DATA.threads;
+            return FORUM_DATA.threads.filter(t => {
+                const inTitle = t.title.toLowerCase().includes(query);
+                const inPosts = t.posts.some(p => p.body.toLowerCase().includes(query) || p.user.toLowerCase().includes(query));
+                const inMeta = t.createdBy.toLowerCase().includes(query) || (t.tags.join(' ').toLowerCase().includes(query));
+                return inTitle || inPosts || inMeta;
+            });
+        }
+
+        renderTable(FORUM_DATA.threads);
+
+        searchInput.addEventListener('input', () => {
+            renderTable(filterThreads(searchInput.value));
+        });
+        clearSearch.addEventListener('click', () => {
+            searchInput.value = '';
+            renderTable(FORUM_DATA.threads);
+            searchInput.focus();
+        });
+
+        /*****************************************
+         * Render: Thread View
+         *****************************************/
+        const threadView = document.getElementById('thread-view');
+        const backBtn = document.getElementById('backBtn');
+        const threadHeader = document.getElementById('threadHeader');
+        const postList = document.getElementById('postList');
+
+        function openThread(id) {
+            const t = FORUM_DATA.threads.find(x => x.id === id);
+            if (!t) return;
+
+            threadHeader.innerHTML = '';
+            threadHeader.appendChild(el('h2', {}, [t.title]));
+            threadHeader.appendChild(el('div', { class: 'small' }, [
+                `Started by ${t.createdBy} on ${formatDate(t.createdAt)} • Last activity ${formatDate(t.lastActivity)} • Views ${t.views} • Replies ${t.replies}`
+            ]));
+            if (t.tags?.length) {
+                threadHeader.appendChild(el('div', { class: 'small', style: 'margin-top:6px;' }, [`Tags: ${t.tags.join(', ')}`]));
+            }
+
+            postList.innerHTML = '';
+            t.posts.forEach((p, idx) => {
+                const card = el('article', { class: 'mission' });
+                const header = el('div', { class: 'small', style: 'margin-bottom: 6px; color:#ddd;' }, [
+                    `${p.user} • ${formatDate(p.postedAt)} • #${idx + 1}`
+                ]);
+                const body = el('div', {}, [p.body]);
+                card.appendChild(header);
+                card.appendChild(body);
+                postList.appendChild(card);
+            });
+
+            listView.classList.add('hidden');
+            threadView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        backBtn.addEventListener('click', () => {
+            threadView.classList.add('hidden');
+            listView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        /*****************************************
+         * Countdown timer (copied behavior)
+         *****************************************/
+        const countdownDate = new Date('2025-11-10').getTime(); // match index.html
+        const timerElements = document.querySelectorAll('.timer');
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            timerElements.forEach(elm => {
+                elm.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            });
+        };
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        /*****************************************
+         * Minimal floating menu behavior (no collapsible forum rows)
+         *****************************************/
+        const floatingToggle = document.querySelector('.floating-menu-toggle');
+        const floatingMenu = document.querySelector('.floating-menu');
+        floatingToggle?.addEventListener('click', () => {
+            if (floatingMenu.classList.contains('open')) {
+                floatingMenu.classList.remove('open');
+                floatingMenu.style.maxHeight = 0;
+            } else {
+                floatingMenu.classList.add('open');
+                floatingMenu.style.maxHeight = '500px';
+            }
+        });
+
+        // Deep menu playful expansion
+        const deepMenu = document.getElementById("deep-menu");
+        const deepMessages = [
+            { message: 'Do not.', button: 'More' },
+            { message: 'Stop.', button: 'More' },
+            { message: 'Turn back.', button: 'More' },
+            { message: 'Don\'t open.', button: 'More' },
+            { message: 'Click off.', button: 'More' },
+            { message: 'Go away.', button: 'More' },
+            { message: 'Don\'t look', button: 'More' },
+            { message: 'Close this menu.', button: 'More' },
+        ];
+        const deepMenuChildren = [...deepMenu.children];
+        let menu = deepMenu;
+        for (const { message, button } of deepMessages) {
+            menu.innerHTML = `
+        <li class="menu-item"><h4>${message}</h4></li>
+        <li class="menu-item">
+          <button class="menu-toggle">${button}</button>
+          <ul class="menu"></ul>
+        </li>
+      `;
+            menu = menu.querySelector('.menu');
+        };
+        menu.append(...deepMenuChildren);
+
+        // Reveal internal2 if set in storage (kept from index behavior)
+        const internal2 = document.getElementById('internal2');
+        function restore() {
+            try {
+                const v = localStorage.getItem('org_internal_total_v1');
+                if (v) internal2.classList.remove('hidden');
+            } catch (e) { }
+        }
+        restore();
+
+        // Top icon click easter egg (non-destructive here)
+        const icons = document.querySelectorAll('.top-icon-container');
+        icons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                icon.classList.add('active');
+            });
+        });
+    </script>
 </body>
-</html>
 
+</html>
