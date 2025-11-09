@@ -16,10 +16,10 @@
       flex:1; padding:10px; background:#200; border:1px solid #500; color:#fdd; font-family: serif;
     }
     .scrollbox { border:1px solid #400; }
-    .thead, .trow { display:grid; grid-template-columns: 1fr 110px 200px 90px; gap:8px; }
-    .thead { padding:10px; border-bottom:1px solid #400; background:#1a0000; position: sticky; top: 52px; z-index: 5; }
+    .thead, .trow { display:grid; grid-template-columns: 1fr 50px 0.5fr 50px; gap:8px; }
+    .thead { padding:10px; border-bottom:1px solid #400; background:#1a0000; position: sticky; top: 58px; z-index: 5; }
     .trow {
-      padding:10px; border-bottom:1px solid #320000; background:#0f0000;
+      padding: 10px; padding-bottom: 20px; padding-top: 20px; border-bottom:1px solid #320000; background:#0f0000;
       transition: background 120ms ease, transform 80ms ease;
       cursor: pointer;
     }
@@ -61,8 +61,10 @@
           <div class="nowrap">Last Activity</div>
           <div class="nowrap">Views</div>
         </div>
-        <div id="threadTable">
-          <!-- Populated by JS -->
+        <div style="overflow-x: hidden;">
+          <div id="threadTable">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </div>
     </section>
@@ -434,7 +436,18 @@
 
         // Other columns
         const repliesCol = el('div', { class: 'nowrap' }, [String(t.replies)]);
-        const lastCol = el('div', { class: 'nowrap' }, [formatDate(t.lastActivity)]);
+
+        const lastCol = document.createElement('div');
+        const dateFirst = document.createElement('span');
+        dateFirst.innerText = t.lastActivity;
+        dateFirst.classList.add('line');
+        const dateSecond = document.createElement('span');
+        dateSecond.innerText = relativeFrom(t.lastActivity);
+        dateSecond.classList.add('line');
+        dateSecond.style.marginLeft = '5px';
+        lastCol.appendChild(dateFirst);
+        lastCol.appendChild(dateSecond);
+
         const viewsCol = el('div', { class: 'nowrap' }, [String(t.views)]);
 
         // Assemble grid columns
