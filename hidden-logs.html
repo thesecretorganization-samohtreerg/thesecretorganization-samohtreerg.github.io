@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CLASSIFIED // Founder Personal Logs</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="icon.png" />
+    <style>
+        /* Classified skin (keeps your base theme) */
+        body.restricted {
+            background: #0a0000;
+        }
+
+        .banner {
+            border: 1px solid #500;
+            background: #140000;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: .06em;
+        }
+
+        .seal {
+            width: 28px;
+            height: 28px;
+            opacity: .85;
+        }
+
+        .watermark {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .06;
+            background-image:
+                repeating-linear-gradient(90deg, transparent 0 220px, #f00 220px 222px),
+                repeating-linear-gradient(0deg, transparent 0 220px, #f00 220px 222px);
+            mix-blend-mode: screen;
+        }
+
+        main {
+            max-width: 980px;
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            padding: 10px 0 8px 0;
+        }
+
+        .notice {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            color: #fdd;
+        }
+
+        .console {
+            border: 1px solid #430000;
+            background: #0e0000;
+            padding: 12px;
+            margin: 14px 0;
+            box-shadow: 0 0 0 1px #200 inset;
+        }
+
+        .console .k {
+            color: #fb9;
+        }
+
+        .console .v {
+            color: #cdd;
+        }
+
+        .log {
+            border: 1px solid #2a0000;
+            background: #0b0000;
+            margin: 12px 0;
+            padding: 12px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            line-height: 1.45;
+        }
+
+        .meta {
+            color: #caa;
+            font-size: .92rem;
+            margin-bottom: 6px;
+        }
+
+        .t {
+            color: #fee;
+        }
+
+        .p {
+            color: #ddd;
+        }
+
+        .redact {
+            position: relative;
+            display: inline-block;
+            background: #300;
+            color: #300;
+            text-shadow: none;
+            border-bottom: 1px dotted #500;
+            padding: 0 4px;
+        }
+
+        .redact.reveal {
+            color: #fdd;
+            background: transparent;
+            border-bottom-color: #400;
+        }
+
+        .blur {
+            filter: blur(5px);
+            transition: filter 220ms ease;
+        }
+
+        .blur.off {
+            filter: none;
+        }
+
+        .btn-ack {
+            border: 1px solid #533;
+            background: #1b0000;
+            color: #fdd;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .smallcaps {
+            font-variant: small-caps;
+            letter-spacing: .04em;
+            color: #f88;
+        }
+
+        .foot {
+            border-top: 1px solid #300;
+            margin-top: 18px;
+            padding-top: 10px;
+            color: #baa;
+        }
+
+        nav a {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body class="page restricted">
+    <div class="watermark" aria-hidden="true"></div>
+
+    <nav>
+        <a href="index.html">Home</a>
+    </nav>
+
+    <header class="banner">
+        <img class="seal" src="icon.png" alt="Red Eye Seal" />
+        <div>
+            <div class="smallcaps">classified // org-eyes-only</div>
+            <div class="notice small">Unauthorized access is a violation of Code B5 section 12. Viewing requires explicit
+                acknowledgement.</div>
+        </div>
+    </header>
+
+    <main>
+        <section class="console">
+            <div class="hdr">
+                <div class="notice">
+                    <span class="k">FILE:</span> <span class="v">FOUNDER_PERSONAL_LOGS.enc</span> &nbsp;|&nbsp;
+                    <span class="k">CLEARANCE:</span> <span class="v">PRIME / CIRCLE</span> &nbsp;|&nbsp;
+                    <span class="k">STATUS:</span> <span class="v">SEALED</span>
+                </div>
+                <button id="ack" class="btn-ack">Acknowledge and View</button>
+            </div>
+            <div class="small" style="margin-top:6px;">
+                Storage: Vault // Mirror-B • Hash: 7c1f:91e2:aa0b • Audit ping every 6 hours
+            </div>
+        </section>
+
+        <!-- Logs are initially blurred. Clicking Acknowledge removes the blur. -->
+        <section id="logs" class="blur">
+            <h1>Founder Personal Logs</h1>
+
+            <!-- 2015 -->
+            <article class="log">
+                <div class="meta">2015-07-09 18:22 // Origin note // Author: Nivlac</div>
+                <div class="p">I drew the first circle on the floor. The circle looked back. I made an eye so it could
+                    learn to watch. The adults spoke softly after that. They did what I asked. They liked that I did not
+                    smile.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2015-11-06 06:06 // Birthday entry</div>
+                <div class="p">Age six today. I set a rule. The world is noisy. I will quiet it one part at a time. I
+                    will build nine quiet places. When they all look at the same point, the noise will stop.</div>
+            </article>
+
+            <!-- 2016 -->
+            <article class="log">
+                <div class="meta">2016-03-21 02:14 // Staffing</div>
+                <div class="p">They argue about following a child. I am not a child. I am a plan. I wrote their tasks on
+                    paper. They obey paper better than me.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2016-11-07 01:02 // Internal loss</div>
+                <div class="p">One worker tried to leave. He had a sister who wrote letters. I sent the letters back
+                    without stamps. He stopped trying to leave. He learned to be quiet. Others learned by watching.
+                </div>
+            </article>
+
+            <!-- 2017 -->
+            <article class="log">
+                <div class="meta">2017-05-20 00:40 // Disappearance</div>
+                <div class="p">Arman did not show up. His badge blinked once then went dark. I filed him as <span
+                        class="redact" data-r="Removed">████████</span>. I kept his tools. They smell like metal and
+                    rain.</div>
+            </article>
+
+            <!-- 2018 -->
+            <article class="log">
+                <div class="meta">2018-02-06 08:50 // Ethics thread</div>
+                <div class="p">They ask if this work is wrong. Wrong for who. I do not measure wrong. I measure
+                    alignment. I measure silence.</div>
+            </article>
+
+            <!-- 2019 -->
+            <article class="log">
+                <div class="meta">2019-09-10 23:11 // Story of a savior</div>
+                <div class="p">Someone whispers about a Chosen One. A bedtime story. Stories are useful. They keep the
+                    staff soft. Soft things bend around plans.</div>
+            </article>
+
+            <!-- 2021 -->
+            <article class="log">
+                <div class="meta">2021-06-02 07:59 // Gridline begins</div>
+                <div class="p">Calibration opens. Eight nodes learn quickly. The ninth looks at me and refuses to blink.
+                </div>
+            </article>
+
+            <!-- 2022 -->
+            <article class="log">
+                <div class="meta">2022-12-24 06:06 // Cost</div>
+                <div class="p">We traded weekends for progress. We traded names for numbers. A worker kept a candle for
+                    two who left. I let the candle burn. Fire is honest.</div>
+            </article>
+
+            <!-- 2023 -->
+            <article class="log">
+                <div class="meta">2023-03-12 05:03 // Node 9 drift</div>
+                <div class="p">The ninth sings off key before dawn. I listen. I hear a house inside the noise. A living
+                    house. I write the address in small letters: <span class="t">626 Armstead Street, Azusa,
+                        California</span>.</div>
+            </article>
+
+            <!-- 2024 -->
+            <article class="log">
+                <div class="meta">2024-10-01 05:18 // Containment</div>
+                <div class="p">Rumors move like insects. I let them bite and then I close my hand. I keep the bodies in
+                    jars. I label them Hope.</div>
+            </article>
+
+            <!-- 2025 (now) -->
+            <article class="log">
+                <div class="meta">2025-11-05 23:50 // Eve of seventeen</div>
+                <div class="p">Tomorrow they will say I am seventeen. Time is a soft rope. I pull it through the
+                    machine. The ninth node still breathes. I will hold its mouth closed.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2025-11-06 09:06 // Directive</div>
+                <div class="p">They sent notices and cakes. I sent them back. I told them to proceed. A celebration is a
+                    leak.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2025-11-08 03:14 // Final window</div>
+                <div class="p">I walked past the tower before dawn. The hum touched my teeth. The street was empty. The
+                    house at the end did not sleep. I felt it count.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2025-11-09 04:42 // Private</div>
+                <div class="p">Sometimes I see the boy in the glass. He looks like me but brighter. If I breathe hard he
+                    fogs and disappears. I keep breathing.</div>
+            </article>
+
+            <article class="log">
+                <div class="meta">2025-11-09 09:12 // Alignment status</div>
+                <div class="p">Green across the board. The pattern is almost awake. When it opens its eye the world will
+                    hold still. If the story boy comes back, I will teach him silence.</div>
+            </article>
+
+            <div class="foot small">
+                End of visible entries. Some lines remain <span class="redact" data-r="REDACTED">████████████</span>.
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Gate: require explicit acknowledgement to unblur content
+        const logs = document.getElementById('logs');
+        document.getElementById('ack').addEventListener('click', () => {
+            logs.classList.add('off');
+            // reveal the first set of redactions after a short delay
+            setTimeout(() => {
+                document.querySelectorAll('.redact').forEach(span => {
+                    span.title = 'Click to toggle redaction';
+                    span.addEventListener('click', () => span.classList.toggle('reveal'));
+                });
+            }, 150);
+        });
+
+        // Tiny “console” effect: blink the CLASSIFIED banner background subtly
+        (function blink() {
+            let on = false;
+            setInterval(() => {
+                on = !on;
+                document.querySelector('.banner').style.boxShadow = on ? '0 0 0 1px #300 inset, 0 0 12px #210' : '0 0 0 1px #300 inset';
+            }, 1200);
+        })();
+    </script>
+</body>
+
+</html>
