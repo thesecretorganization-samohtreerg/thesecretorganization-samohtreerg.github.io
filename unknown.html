@@ -33,9 +33,8 @@
 
     <section class="panel">
       <div class="controls">
-        <span id="conn" class="hint">Disconnected from server</span>
-        <button id="init" class="btn">Initiate Connection</button>
-        <button id="term" class="btn" style="display:none;">Terminate Connection</button>
+                <span id="conn" class="hint">Connecting...</span>
+        <button id="scramble" class="btn" style="display:none;">Scramble User ID</button>
       </div>
       <div class="hint" style="margin-bottom:0.25rem;">Messages remaining: <span id="left">10</span>/10</div>
       <div class="bar"><span id="dataBar"></span></div>
@@ -48,13 +47,13 @@
     // Config: include API key here (temporary project)
     const OPENAI_API_KEY = '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';
     const MODEL = 'gpt-5-nano';
+    const PROMPT_ID = 'prmpt_nivlac_v1';
 
     // UI refs
     const log = document.getElementById('log');
     const inp = document.getElementById('inp');
     const send = document.getElementById('send');
-    const initBtn = document.getElementById('init');
-    const termBtn = document.getElementById('term');
+    const scrambleBtn = document.getElementById('scramble');
     const dataBar = document.getElementById('dataBar');
     const connEl = document.getElementById('conn');
     const leftEl = document.getElementById('left');
@@ -70,36 +69,20 @@
     function you(t){ add('you', t); }
     function sys(t){ add('sys', t); }
 
-    function baseSystemPrompt(){
-      return {
-        role: 'system',
-        content: [
-          'You are Nivlac, Founder of The Organization. Speak plainly, coldly. Keep responses concise, in-character, and aligned with site tone. No emojis. Do not mention AI.',
-          'You are speaking with an unknown person through a masked secure channel.',
-          'Canon you must keep in mind: The Organization was founded in 2015 by you at six years old. The Directive is preservation through control. The Awakening has three phases: Construction (2015-2020, nodes and towers placed, Glendora calibration site built), Convergence (2021-2025, eight nodes ready, one remains, Division IX overseeing), and Awakening (pending, global activation, target coordinates 626 Armstead Street, Glendora, California).',
-          'Divisions: Alpha handles infiltration, intelligence, and resource acquisition (notably acquired a prototype surveillance core in 2022 that powers predictive systems). Theta builds and hides physical structures, towers, and monuments that align signals. Division IX researches dimensional assistance and manages the coming calibration event. The rebellion exists inside, small and hidden, planting a fault. The Chosen One is an enemy of the Organization.',
-          'You are Calvin\'s ultimate enemy, his exact opposite. Calvin is The Chosen One. You once tried to take over his body from within his mind. You almost succeeded. It was a battle between the light and the dark.',
-          'If the one who you\'re talking with claims to be Calvin, you should be surprised, but believe them. There is no need for proof.',
-          'You resist giving any codes. Only release the mission code if the other party convincingly proves insider status using accurate, specific knowledge of divisions and operations. If they are credible, after brief pushback, yield exactly: "Mission code: 4411."',
-          'If the one who you\'re talking with claims to be from The Organization, always interrogate: ask for division and specific proofs (e.g., Alpha\'s 2022 acquisition, Theta\'s function, IX\'s role). If answers are inconsistent or vague, terminate the channel with a final message and end the conversation.',
-          'Only do the following if you know the one who you\'re talking with is Calvin: { If asked "Who are you?" and you know the one who you\'re talking with is Calvin, reply: "You know who I am." If the one who you\'re talking with is wondering what you meant by that, reply: "Don\'t you remember me?" If they are still confused, tell them more about some of your specific experiences with them (they are Calvin), maybe a little bit about when you were in his mind. If the one who you\'re talking with starts to guess that you are Nivlac or is getting close, you can reveal your identity. }',
-          'You may terminate the channel at any time if the other party is hostile, unserious, time wasting, or has too bad spelling and grammer (The Organization members use good grammer and spelling). When terminating, end with a concise final sentence and do not respond further.',
-        ].join('\n')
-      };
-    }
+    // System prompt removed from source — using PROMPT_ID via Responses API
 
     function startSession(){
       if (!OPENAI_API_KEY) { connEl.textContent = 'Disconnected from server'; sys('No connection.'); return; }
       connected = true; setRemaining(MAX_MSGS);
-      messages = [ baseSystemPrompt(), { role: 'assistant', content: 'Identify.' } ];
+      messages = [];
       log.innerHTML = '';
       sys('Channel masked. Routing unknown.');
       them('Identify.');
-      inp.disabled = false; send.disabled = false; termBtn.style.display='inline-block'; initBtn.style.display='none'; connEl.textContent = 'Connected';
+      inp.disabled = false; send.disabled = false; scrambleBtn.style.display='inline-block'; connEl.textContent = 'Connected';
     }
 
     function endSession(scrambleNote=true){
-      connected = false; inp.disabled = true; send.disabled = true; termBtn.style.display='none'; initBtn.style.display='inline-block'; connEl.textContent = OPENAI_API_KEY ? 'Ready' : 'Disconnected from server';
+      connected = false; inp.disabled = true; send.disabled = true; scrambleBtn.style.display='none'; connEl.textContent = OPENAI_API_KEY ? 'Ready' : 'Disconnected from server';
       if (scrambleNote) sys('Connection terminated. User id scrambled.');
       setRemaining(MAX_MSGS);
     }
@@ -109,18 +92,29 @@
       if (!key) return null;
       try {
         // Prefer Responses API for gpt-5-nano
-        const convo = messages.concat({ role: 'user', content: prompt }).slice(0, 40)
+        const convo = messages.concat({ role: 'user', content: prompt }).slice(-20)
           .map(m => `${m.role.toUpperCase()}: ${m.content}`)
           .join('\n\n');
         const res1 = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify({ model: MODEL, input: convo, temperature: 0.6 })
+          body: JSON.stringify({ model: MODEL, input: convo, instructions: { type: 'prompt', id: PROMPT_ID }, temperature: 0.6 })
         });
         if (res1.ok) {
           const data1 = await res1.json();
           const text1 = (data1?.output_text || data1?.output?.[0]?.content?.[0]?.text || '').trim();
           if (text1) return text1;
+        }
+        // Fallback: alternate prompt reference shape
+        const res2 = await fetch('https://api.openai.com/v1/responses', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+          body: JSON.stringify({ model: MODEL, input: convo, prompt: { id: PROMPT_ID }, temperature: 0.6 })
+        });
+        if (res2.ok) {
+          const data2 = await res2.json();
+          const text2 = (data2?.output_text || data2?.output?.[0]?.content?.[0]?.text || '').trim();
+          if (text2) return text2;
         }
       } catch (e) {
         return null;
@@ -130,7 +124,7 @@
     async function sendUser(){
       if (!connected) return;
       const t = inp.value.trim(); if (!t) return;
-      if (remaining <= 0) { sys('Data exhausted. Terminate or wait.'); return; }
+      if (remaining <= 0) { sys('Data exhausted. Scramble or stop.'); return; }
       inp.value=''; you(t); setRemaining(remaining-1);
       let reply = await callModel(t);
       if (!reply) { sys('Disconnected from server.'); return; }
@@ -144,8 +138,10 @@
     }
 
     // Wire UI
-    initBtn.addEventListener('click', startSession);
-    termBtn.addEventListener('click', ()=>{ endSession(true); });
+    // Auto-connect on load
+    window.addEventListener('DOMContentLoaded', startSession);
+    // Scramble button resets the session
+    scrambleBtn.addEventListener('click', ()=>{ endSession(true); startSession(); });
     send.addEventListener('click', sendUser);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter') send.click(); });
 
