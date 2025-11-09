@@ -6,6 +6,7 @@
     --color-accent: #c00;
     --color-accent-hover: #f00;
     --color-accent-dark: #900;
+    --color-dim: #fff3;
     --color-panel-bg: #080808;
     --color-menu-bg: #1b0000;
     --color-menu-hover: #350000;
@@ -82,6 +83,11 @@ button {
 .hint {
     color: rgb(175, 150, 150);
     font-size: 0.95rem;
+}
+
+.small {
+    font-size: 0.8rem;
+    color: var(--color-dim);
 }
 
 /* =========================================

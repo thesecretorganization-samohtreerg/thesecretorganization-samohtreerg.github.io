@@ -42,6 +42,7 @@
                     <li class="menu-item"><a href="contact.html">Contact</a></li>
                     <li class="menu-item"><a href="forum.html">Forum</a></li>
                     <li class="menu-item"><a href="internal.html">Internal Access</a></li>
+                    <li class="menu-item hidden" id="internal2"><a href="internal2.html">Internal Access 2</a></li>
                 </ul>
             </div>
         </div>
@@ -320,7 +321,25 @@
             `;
             menu = menu.querySelector('.menu');
         };
-        menu.append(...deepMenuChildren)
+        menu.append(...deepMenuChildren);
+
+        // Reveal internal2 when necessary
+        const internal2 = document.getElementById('internal2');
+
+        function restore() {
+            try {
+                const v = localStorage.getItem('org_internal_total_v1');
+                if (v) {
+                    revealInternal2();
+                }
+            } catch (e) { }
+        }
+
+        function revealInternal2() {
+            internal2.classList.remove('hidden');
+        }
+
+        restore();
     </script>
 </body>
 
