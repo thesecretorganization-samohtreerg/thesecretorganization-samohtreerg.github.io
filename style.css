@@ -75,6 +75,10 @@ button {
     text-shadow: 0 0 10px var(--color-accent-hover);
 }
 
+.line {
+    display: inline-block;
+}
+
 /* =========================================
    Navigation Bar
 ========================================= */
@@ -89,8 +93,23 @@ nav {
     min-height: 50px;
 }
 
-nav.multipart {
-    justify-content: space-between;
+nav.multipart>*{
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.nav-start {
+    justify-content: left;
+}
+
+.nav-center {
+    gap: 5px;
+    justify-content: center;
+}
+
+.nav-end {
+    justify-content: right;
 }
 
 nav a {
@@ -106,10 +125,6 @@ nav a {
 nav a:hover {
     color: var(--color-accent-hover);
     text-shadow: 0 0 10px var(--color-accent-hover);
-}
-
-.nav-start>* {
-    display: inline-block;
 }
 
 /* =========================================
