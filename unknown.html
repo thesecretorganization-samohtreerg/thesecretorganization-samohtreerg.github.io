@@ -91,28 +91,35 @@
       const key = OPENAI_API_KEY.trim();
       if (!key) return null;
       try {
-        // Prefer Responses API for gpt-5-nano
-        const convo = messages.concat({ role: 'user', content: prompt }).slice(-20)
-          .map(m => `${m.role.toUpperCase()}: ${m.content}`)
-          .join('\n\n');
+        // Responses API with stored Prompt ID and conversation memory
+        const body1 = { model: MODEL, input: String(prompt), instructions: { type: 'prompt', id: PROMPT_ID } };
+        if (typeof conversationId === 'string' && conversationId) body1.conversation = { id: conversationId };
+
         const res1 = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify({ model: MODEL, input: convo, instructions: { type: 'prompt', id: PROMPT_ID }, temperature: 0.6 })
+          body: JSON.stringify(body1)
         });
         if (res1.ok) {
           const data1 = await res1.json();
+          if (data1?.conversation?.id) conversationId = data1.conversation.id;
+          else if (data1?.conversation_id) conversationId = data1.conversation_id;
           const text1 = (data1?.output_text || data1?.output?.[0]?.content?.[0]?.text || '').trim();
           if (text1) return text1;
         }
+
         // Fallback: alternate prompt reference shape
+        const body2 = { model: MODEL, input: String(prompt), prompt: { id: PROMPT_ID } };
+        if (typeof conversationId === 'string' && conversationId) body2.conversation = { id: conversationId };
         const res2 = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify({ model: MODEL, input: convo, prompt: { id: PROMPT_ID }, temperature: 0.6 })
+          body: JSON.stringify(body2)
         });
         if (res2.ok) {
           const data2 = await res2.json();
+          if (data2?.conversation?.id) conversationId = data2.conversation.id;
+          else if (data2?.conversation_id) conversationId = data2.conversation_id;
           const text2 = (data2?.output_text || data2?.output?.[0]?.content?.[0]?.text || '').trim();
           if (text2) return text2;
         }
