@@ -27,24 +27,22 @@
   <main class="wrap">
     <h1>Internal Access</h1>
     <section class="panel">
-      <p>Enter the total from all mission outputs. Verify it exactly.</p>
+      <p>Enter security code to proceed.</p>
       <div class="row">
-        <input id="total" class="total mono" inputmode="numeric" placeholder="Total" maxlength="6">
+        <input id="total" class="total mono" inputmode="numeric" placeholder="Security Code" maxlength="6">
         <button id="submit" class="verify">Verify</button>
         <span id="msg" class="mono"></span>
       </div>
       <div id="reveal" class="reveal hidden">
-        <p class="ok">Authorization released.</p>
-        <p class="mono" id="loc"></p>
-        <p class="hint">Use the physical key to open the box you found. Proceed when ready.</p>
+        <p class="mono ok">Information unlocked.</p>
+        <p>Key location ready: Behind the first book in the top shelf of the bookshelf in the master bedroom. (Placeholder)</p>
+        <p class="hint">Use the physical key to open the box we sent you. We wish you luck.</p>
       </div>
     </section>
   </main>
   <script>
     const EXPECTED = 24142; // sum of six mission codes
     const LS_KEY = 'org_internal_total_v1';
-    // Edit this to set the exact key location text.
-    const KEY_LOCATION = 'Key location ready: check the agreed spot inside the house. (Edit internal.html to set exact text.)';
 
     const input = document.getElementById('total');
     const btn = document.getElementById('submit');
@@ -55,8 +53,7 @@
     function success() {
       localStorage.setItem(LS_KEY, String(EXPECTED));
       msg.textContent = 'Accepted';
-      msg.className = 'mono ok';
-      loc.textContent = KEY_LOCATION;
+      msg.classList.add('ok');
       reveal.classList.remove('hidden');
     }
 
@@ -75,7 +72,7 @@
         success();
       } else {
         msg.textContent = 'Denied';
-        msg.className = 'mono bad';
+        msg.classList.add('bad');
       }
     });
 

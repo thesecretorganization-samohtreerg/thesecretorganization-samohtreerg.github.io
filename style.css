@@ -79,6 +79,11 @@ button {
     display: inline-block;
 }
 
+.hint {
+    color: rgb(175, 150, 150);
+    font-size: 0.95rem;
+}
+
 /* =========================================
    Navigation Bar
 ========================================= */
