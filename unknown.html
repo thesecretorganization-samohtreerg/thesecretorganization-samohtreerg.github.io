@@ -61,7 +61,7 @@
     const MAX_MSGS = 10; // user messages per session
     let remaining = MAX_MSGS;
     let connected = false;
-    let messages = [];
+    let conversationId;
 
     function setRemaining(n){ remaining = Math.max(0, Math.min(MAX_MSGS, n)); const pct = (remaining / MAX_MSGS) * 100; dataBar.style.width = pct + '%'; leftEl.textContent = String(remaining); }
     function add(cls, text){ const d=document.createElement('div'); d.className='msg '+cls; d.textContent=text; log.appendChild(d); log.scrollTop = log.scrollHeight; }
@@ -74,7 +74,6 @@
     function startSession(){
       if (!OPENAI_API_KEY) { connEl.textContent = 'Disconnected from server'; sys('No connection.'); return; }
       connected = true; setRemaining(MAX_MSGS);
-      messages = [];
       log.innerHTML = '';
       sys('Channel masked. Routing unknown.');
       them('Identify.');
@@ -93,19 +92,20 @@
       try {
         // Responses API with stored Prompt ID and conversation memory
         const body = { model: MODEL, input: String(prompt), prompt: { id: PROMPT_ID, version: 1 } };
-        if (typeof conversationId === 'string' && conversationId) body1.conversation = { id: conversationId };
+        if (typeof conversationId === 'string') body.conversation = conversationId;
+        console.log(body); // TODO: Fix
 
-        const res1 = await fetch('https://api.openai.com/v1/responses', {
+        const res = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-          body: JSON.stringify(body1)
+          body: JSON.stringify(body)
         });
-        if (res1.ok) {
-          const data1 = await res1.json();
-          if (data1?.conversation?.id) conversationId = data1.conversation.id;
-          else if (data1?.conversation_id) conversationId = data1.conversation_id;
-          const text1 = (data1?.output_text || data1?.output?.[0]?.content?.[0]?.text || '').trim();
-          if (text1) return text1;
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.conversation?.id) conversationId = data.conversation.id; // TODO: Sanitize
+          else if (data?.conversation_id) conversationId = data.conversation_id;
+          const text = (data?.output_text || data?.output?.[0]?.content?.[0]?.text || '').trim();
+          if (text) return text;
         }
       } catch (e) {
         return null;
@@ -115,15 +115,14 @@
     async function sendUser(){
       if (!connected) return;
       const t = inp.value.trim(); if (!t) return;
-      if (remaining <= 0) { sys('Data exhausted. Scramble or stop.'); return; }
+      if (remaining <= 0) { sys('Data exhausted. Scramble ID to try again.'); return; }
       inp.value=''; you(t); setRemaining(remaining-1);
       let reply = await callModel(t);
       if (!reply) { sys('Disconnected from server.'); return; }
       them(reply);
-      messages.push({ role:'user', content:t }, { role:'assistant', content:reply });
       // Allow Nivlac to terminate via message content
       const lower = reply.toLowerCase();
-      if (lower.includes('connection terminated') || lower.includes('channel closed') || lower.includes('this conversation is over')) {
+      if (lower === 'connection terminated') {
         endSession(false);
       }
     }
