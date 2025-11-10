@@ -120,6 +120,8 @@
     // Replace with the real mission code from the box
     const EXPECTED_CODE = 'C#F%8Y';
     const LS_DESTROYED = 'org_destroyed';
+    const boom = new Audio('glitch-destruction.mp3');
+    boom.preload = 'auto';
 
     const inp = document.getElementById('code');
     const btn = document.getElementById('submit');
@@ -150,6 +152,7 @@
       msg.textContent = 'Accepted';
       msg.classList.add('ok');
       reveal.classList.remove('hidden');
+      try { boom.play(); } catch(e){}
       glitchSequence();
     }
 
