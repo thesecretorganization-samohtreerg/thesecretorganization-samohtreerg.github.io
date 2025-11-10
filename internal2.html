@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Access 2 | The Organization</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Base layout (mirrors Internal Access 1) */
+    .wrap { max-width: 780px; margin: 0 auto; padding: 1rem; }
+    .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
+    .row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin-top: 0.5rem; }
+    input.total { width: 12rem; text-align: center; padding: 0.55rem 0.7rem; font-size: 1.1rem; border-radius: 6px; border: 1px solid rgba(255,0,0,0.28); background: rgba(255,255,255,0.06); color: #f2f2f2; letter-spacing: 0.08em; }
+    input.total::placeholder { color: rgba(255,255,255,0.45); }
+    button.verify { background: linear-gradient(180deg, rgba(255,0,0,0.18), rgba(255,0,0,0.12)); color: #fff; border: 1px solid rgba(255,0,0,0.45); padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer; text-shadow: 0 0 6px rgba(255,0,0,0.35); }
+    button.verify:hover { background: rgba(255,0,0,0.25); }
+    .ok { color: #7CFC00; font-weight: bold; }
+    .bad { color: #ff5c5c; font-weight: bold; }
+    .reveal { margin-top: 0.75rem; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Deep “government” classified skin (from hidden-logs) */
+    body.restricted { background: #0a0000; }
+    .banner { border: 1px solid #500; background: #140000; padding: 10px 12px; display: flex; align-items: center; gap: 10px; letter-spacing: .06em; }
+    .seal { width: 28px; height: 28px; opacity: .85; }
+    .watermark { position: fixed; inset: 0; pointer-events: none; opacity: .06; background-image:
+        repeating-linear-gradient(90deg, transparent 0 220px, #f00 220px 222px),
+        repeating-linear-gradient(0deg, transparent 0 220px, #f00 220px 222px); }
+    .stamp { display: inline-block; border: 1px solid #a00; color: #faa; padding: 2px 6px; font-weight: 700; background: rgba(255,0,0,0.08); border-radius: 4px; font-size: 12px; }
+    .note { color: rgba(255,255,255,0.65); }
+  </style>
+</head>
+<body class="restricted">
+  <div class="watermark"></div>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="banner">
+      <img class="seal" src="icon.png" alt="Seal">
+      <strong>CLASSIFIED // CLEARANCE REQUIRED</strong>
+      <span class="stamp">ONLY VERIFED PERSONNEL CAN CONTINUE</span>
+    </div>
+
+    <h1>Internal Access 2</h1>
+    <section class="panel">
+      <p>Restricted area. Enter security code to continue. Only one may pass.</p>
+      <div class="row">
+        <input id="code" class="total mono" placeholder="Security Code" maxlength="16" />
+        <button id="submit" class="verify">Verify</button>
+        <span id="msg" class="mono"></span>
+      </div>
+      <div id="reveal" class="reveal hidden">
+        <p class="ok mono">Authorization released.</p>
+        <p class="note">This is it. The final phase. The rebellion has been working on this since the beginning.
+            You were the last piece we needed. The world will finally be free. The Awakening will never happen.
+            The Organization will be destroyed.</p>
+        <p class="mono">Destruct sequence activated. <span id="timer">#</span>s remaining.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Replace with the real mission code from the box
+    const EXPECTED_CODE = 'C#F%8Y';
+    const LS_KEY2 = 'org_internal2_code_ok_v1';
+
+    const inp = document.getElementById('code');
+    const btn = document.getElementById('submit');
+    const msg = document.getElementById('msg');
+    const reveal = document.getElementById('reveal');
+
+    function allow() {
+      localStorage.setItem(LS_KEY2, 'ok');
+      msg.textContent = 'Accepted';
+      msg.classList.add('ok');
+      reveal.classList.remove('hidden');
+    }
+
+    function restore() {
+      try {
+        const v = localStorage.getItem(LS_KEY2);
+        if (v === 'ok') allow();
+      } catch(e){}
+    }
+
+    btn.addEventListener('click', () => {
+      const v = (inp.value || '').trim().toUpperCase();
+      if (!v) { msg.textContent = 'Required'; msg.classList.add('bad'); return; }
+      if (v === EXPECTED_CODE) {
+        allow();
+      } else {
+        msg.textContent = 'Denied';
+        msg.classList.add('bad');
+      }
+    });
+
+    inp.addEventListener('input', () => {
+      inp.value = inp.value.slice(0, 16);
+    });
+
+    restore();
+  </script>
+</body>
+</html>
