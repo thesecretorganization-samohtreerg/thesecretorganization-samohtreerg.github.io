@@ -32,19 +32,32 @@
     .note { color: rgba(255,255,255,0.65); }
 
     /* Countdown and glitch visuals */
-    .overlay { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.7); z-index: 10000; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; }
-    .overlay.hidden { display: none; }
-    .overlay .clock { font-size: 3rem; letter-spacing: 0.08em; }
-    .overlay .sub { opacity: .8; margin-top: .5rem; }
-    .glitch { animation: shake .15s infinite alternate; filter: hue-rotate(10deg) contrast(1.2) saturate(1.1); }
-    @keyframes shake { from { transform: translate(-1px, 0); } to { transform: translate(1px, 0); } }
-    .static::before { content: ""; position: absolute; inset: 0; background:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px),
-        repeating-linear-gradient(90deg, rgba(255,0,0,0.03) 0 3px, transparent 3px 6px);
-        mix-blend-mode: screen; pointer-events: none; }
+    #glitchPanel {
+        position: fixed;
+        display: none;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto; /* Centers the element horizontally and vertically */
+        width: 400px;
+        height: 300px;
+        z-index: 9999; /* Ensures it's on top of other content */
+    }
 
-    /* Final blackout */
-    .blackout { position: fixed; inset: 0; background: #000; z-index: 2147483000; opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
+    #glitchPanel>div {
+        overflow: hidden;
+        transform: scale(1, 0);
+        transition: transform 0.5s;
+        background-color: #200;
+        border: 1px solid #f00;
+        padding: 20px;
+    }
+
+    #glitchPanel>div>p {
+        text-align: center;
+        color: #f00;
+    }
   </style>
 </head>
 <body class="restricted">
@@ -54,15 +67,15 @@
   </nav>
 
   <main class="wrap">
-    <div class="banner">
+    <div class="banner glitch">
       <img class="seal" src="icon.png" alt="Seal">
-      <strong>CLASSIFIED // CLEARANCE REQUIRED</strong>
-      <span class="stamp">ONLY VERIFED PERSONNEL CAN CONTINUE</span>
+      <strong class="colorGlitch">CLASSIFIED // CLEARANCE REQUIRED</strong>
+      <span class="stamp colorGlitch">ONLY VERIFED PERSONNEL CAN CONTINUE</span>
     </div>
 
-    <h1>Internal Access 2</h1>
-    <section class="panel">
-      <p>Restricted area. Enter security code to continue. Only one may pass.</p>
+    <h1 class="colorGlitch">Internal Access 2</h1>
+    <section class="panel glitch">
+      <p class="colorGlitch">Restricted area. Enter security code to continue. Only one may pass.</p>
       <div class="row">
         <input id="code" class="total mono" placeholder="Security Code" maxlength="16" />
         <button id="submit" class="verify">Verify</button>
@@ -70,17 +83,15 @@
       </div>
       <div id="reveal" class="reveal hidden">
         <p class="ok mono">Authorization released.</p>
-        <p class="note">This is it. The final phase. The rebellion has been working on this since the beginning.
-            You were the last piece we needed. The world will finally be free. The Awakening will never happen.
-            The Organization will be destroyed.</p>
-        <p class="mono">Destruct sequence activated. <span id="timer">#</span>s remaining.</p>
       </div>
     </section>
   </main>
-  <div id="overlay" class="overlay hidden">
+  <div id="glitchPanel" class="glitch">
     <div>
-      <div class="clock" id="clock">15</div>
-      <div class="sub">SECURITY OVERRIDE IN PROGRESS</div>
+        <p class="colorGlitch">This is it. The final phase. The rebellion has been working on this since the beginning.
+            You were the last piece we needed. The world will finally be free. The Awakening will never happen.
+            The Organization will be destroyed.</p>
+        <p class="mono colorGlitch">Destruct sequence activated. <span class="timer">15</span>s remaining.</p>
     </div>
   </div>
   <div id="blackout" class="blackout"></div>
@@ -94,39 +105,60 @@
     const btn = document.getElementById('submit');
     const msg = document.getElementById('msg');
     const reveal = document.getElementById('reveal');
+    const glitchPanel = document.getElementById('glitchPanel');
+
+    function applyGlitch(e) {
+        e.style.filter = `blur(${Math.random() * 2}px) invert(${Math.random() ** 20 * 100}%)`;
+        e.style.transform = `translate(${(Math.random() - 0.5) * 10}px, ${(Math.random() - 0.5) * 10}px)`;
+        e.querySelectorAll(".colorGlitch").forEach(e => {
+            if (Math.random() < 0.5) {
+                e.style.color = "";
+            } else {
+                e.style.color = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+            }
+        });
+    }
+
+    function disableNavigation() {
+        document.querySelectorAll('a, button').forEach(el => {
+            el.setAttribute('disabled', 'true');
+            el.addEventListener('click', ev => ev.preventDefault(), { capture: true });
+        });
+    }
 
     function allow() {
       msg.textContent = 'Accepted';
       msg.classList.add('ok');
       reveal.classList.remove('hidden');
-      beginCountdown();
+      glitchSequence();
     }
 
-    function restore() {}
-
-    function disableNavigation(){
-      document.querySelectorAll('a, button').forEach(el => {
-        if (el.id === 'submit') return;
-        el.setAttribute('disabled','true');
-        el.addEventListener('click', ev => ev.preventDefault(), { capture: true });
-      });
+    function glitchSequence() {
+        disableNavigation();
+        const glitchElements = document.querySelectorAll('.glitch');
+        setInterval(() => {
+            glitchElements.forEach(glitchElement => {
+                applyGlitch(glitchElement);
+            });
+        }, 15);
+        setTimeout(() => {
+            glitchPanel.style.display = "block"
+            glitchPanel.offsetHeight; // Trigger reflow
+            glitchPanel.querySelector("div").style.transform = "scale(1, 1)";
+            beginCountdown();
+        }, 2000);
     }
 
-    function beginCountdown(){
-      disableNavigation();
-      const overlay = document.getElementById('overlay');
-      const clock = document.getElementById('clock');
-      overlay.classList.remove('hidden');
-      overlay.classList.add('static');
-      let t = 15;
-      (document.getElementById('timer')||{}).textContent = String(t);
-      clock.textContent = String(t);
-      const iv = setInterval(()=>{
-        t--; (document.getElementById('timer')||{}).textContent = String(t);
+    function beginCountdown() {
+        const countdowns = document.querySelectorAll('.countdown');
+        let t = 15;
+        countdowns.forEach(countdown => countdown.textContent = String(t));
         clock.textContent = String(t);
-        overlay.classList.toggle('glitch');
-        if (t <= 0){ clearInterval(iv); startCollapse(); }
-      }, 1000);
+        const iv = setInterval(() => {
+            t--;
+            countdowns.forEach(countdown => countdown.textContent = String(t));
+            if (t <= 0) { clearInterval(iv); startCollapse(); }
+        }, 1000);
     }
 
     function startCollapse(){
@@ -178,8 +210,6 @@
     inp.addEventListener('input', () => {
       inp.value = inp.value.slice(0, 16);
     });
-
-    restore();
   </script>
 </body>
 </html>
