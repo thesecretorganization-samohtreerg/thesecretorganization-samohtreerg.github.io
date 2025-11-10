@@ -151,6 +151,10 @@
     }
 
     function glitchSequence() {
+        // fix for safari lag
+        const page = document.getElementById('page');
+        page.style.transform = `scale(0.999)`;
+
         disableNavigation();
         const glitchElements = document.querySelectorAll('.glitch');
         setInterval(() => {
