@@ -8,7 +8,8 @@
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="style.css">
   <style>
-    body { overflow: hidden; }
+    body { overflow: hidden; height: 100vh; filter: url('#liquify'); }
+    #page { height: 100vh; position: relative; }
     /* Base layout (mirrors Internal Access 1) */
     .wrap { max-width: 780px; margin: 0 auto; padding: 1rem; }
     .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
@@ -23,7 +24,6 @@
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
     /* Deep “government” classified skin (from hidden-logs) */
-    body.restricted { background: #0a0000; }
     .banner { border: 1px solid #500; background: #140000; padding: 10px 12px; display: flex; align-items: center; gap: 10px; letter-spacing: .06em; }
     .seal { width: 28px; height: 28px; opacity: .85; }
     .watermark { position: fixed; inset: 0; pointer-events: none; opacity: .06; background-image:
@@ -40,7 +40,7 @@
     }
 
     #glitchPanel {
-        position: fixed;
+        position: absolute;
         display: none;
         top: 0;
         bottom: 0;
@@ -68,6 +68,7 @@
   </style>
 </head>
 <body class="restricted">
+    <div id="page">
   <div class="watermark"></div>
   <nav class="glitch">
     <a class="glitch" href="index.html">Home</a>
@@ -100,11 +101,17 @@
         <p class="mono colorGlitch" id="mainCountdown" style="font-size: 30px;">Destruct sequence activated. <span class="countdown">15</span>s
             remaining.</p>
         <p class="colorGlitch" style="font-size: 20px;">This is it. The final phase. The rebellion has been working on this since the beginning.
-            You were the last piece we needed. The world will finally be free. The Awakening will never happen.
+            You were the last piece we needed. The world will finally be free. The Awakening has been stopped.
             The Organization will be destroyed.</p>
     </div>
   </div>
-  <div id="blackout" class="blackout"></div>
+</div>
+    <svg width="0" height="0">
+        <filter id="liquify">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="2" result="noise" />
+            <feDisplacementMap id="displacementMap" in="SourceGraphic" in2="noise" scale="0" />
+        </filter>
+    </svg>
 
   <script>
     // Replace with the real mission code from the box
@@ -172,27 +179,26 @@
 
     function startCollapse(){
       document.getElementById('mainCountdown').textContent = 'SEQUENCE COMPLETE';
-      const cx = window.innerWidth/2, cy = window.innerHeight/2;
-      const targets = Array.from(document.querySelectorAll('nav, .banner, main'));
-      targets.forEach(el => {
-        const r = el.getBoundingClientRect();
-        const dx = cx - (r.left + r.width/2);
-        const dy = cy - (r.top + r.height/2);
-        el.style.position = 'fixed';
-        el.style.left = r.left + 'px';
-        el.style.top = r.top + 'px';
-        el.style.width = r.width + 'px';
-        el.style.height = r.height + 'px';
-        el.style.margin = '0';
-        const dur = 15000 + Math.random()*1200;
-        el.animate([
-          { transform: 'translate(0,0) scale(1) rotate(0deg)', filter: 'none' },
-          { transform: `translate(${dx*0.5}px, ${dy*0.5}px) rotate(180deg) scale(0.7)`, filter: 'hue-rotate(45deg) contrast(1.4)' },
-          { transform: `translate(${dx}px, ${dy}px) rotate(720deg) scale(0.01)` , filter: 'hue-rotate(120deg) contrast(1.8) saturate(1.4)' }
-        ], { duration: dur, easing: 'cubic-bezier(.2,.6,.2,1)' }).onfinish = () => {
-          el.remove();
-        };
-      });
+      localStorage.setItem(LS_DESTROYED, '1');
+
+      const displacementMap = document.getElementById('displacementMap');
+      const page = document.getElementById("page");
+      let t = 0
+      let scale = 0;
+      const intervalId = setInterval(() => {
+          t += 15 / 1000;
+          scale += 0.01;
+          scale *= 1.03;
+          displacementMap.setAttribute('scale', scale);
+          page.style.transform = `scale(${Math.max(1 - (t / 8) ** 2, 0)}) rotate(${(t * 1.2) ** 2}deg)`;
+      }, 15);
+      setTimeout(() => {
+        clearInterval(intervalId);
+        document.open();
+        document.write('');
+        document.close();
+        document.body.style.backgroundColor = '#000';
+      }, 8000);
     }
 
     btn.addEventListener('click', () => {
