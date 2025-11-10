@@ -46,7 +46,7 @@
   <script>
     // Config: include API key here (temporary project)
     const OPENAI_API_KEY = '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';
-    const MODEL = 'gpt-5-nano';
+    const MODEL = 'gpt-4.1-nano';
     const PROMPT_ID = 'pmpt_6911233f7bb88197894848bfb4305eef073c39e11439c848';
 
     // UI refs
@@ -89,7 +89,7 @@
     async function callModel(prompt){
       try {
         // Responses API with stored Prompt ID and conversation memory
-        const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }], prompt: { id: PROMPT_ID, version: '1' } };
+        const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }], prompt: { id: PROMPT_ID } };
         if (previousResponseId !== undefined) body.previous_response_id = previousResponseId;
 
         const res = await fetch('https://api.openai.com/v1/responses', {
@@ -101,7 +101,7 @@
           const data = await res.json();
           console.log(data);
           previousResponseId = data.id;
-          const text = data.output[1].content[0].text;
+          const text = data.output[0].content[0].text;
           return text;
         }
       } catch (e) {
