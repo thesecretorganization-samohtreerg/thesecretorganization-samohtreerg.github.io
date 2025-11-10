@@ -89,8 +89,9 @@
     async function callModel(prompt){
       try {
         // Responses API with stored Prompt ID and conversation memory
-        const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }]/*, prompt: { id: PROMPT_ID, version: 1 }*/ };
-        if (typeof conversationId === 'string') body.conversation = conversationId;
+        // TODO: make the conversation store memory.
+        const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }], prompt: { id: PROMPT_ID, version: '1' } };
+        // if (typeof conversationId === 'string') body.conversation = conversationId;
 
         const res = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
@@ -98,12 +99,12 @@
           body: JSON.stringify(body)
         });
         if (res.ok) {
-          console.log(res);
           const data = await res.json();
-          if (data?.conversation?.id) conversationId = data.conversation.id; // TODO: Sanitize
-          else if (data?.conversation_id) conversationId = data.conversation_id;
-          const text = (data?.output_text || data?.output?.[0]?.content?.[0]?.text || '').trim();
-          if (text) return text;
+          console.log(data);
+          // if (data.conversation.id) conversationId = data.conversation.id; // TODO: Sanitize
+          // else if (data?.conversation_id) conversationId = data.conversation_id;
+          const text = data.output[1].content[0].text;
+          return text;
         }
       } catch (e) {
         return null;
