@@ -44,7 +44,7 @@
         mix-blend-mode: screen; pointer-events: none; }
 
     /* Final blackout */
-    .blackout { position: fixed; inset: 0; background: #000; z-index: 2147483000; opacity: 0; transition: opacity 1.2s ease; }
+    .blackout { position: fixed; inset: 0; background: #000; z-index: 2147483000; opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
   </style>
 </head>
 <body class="restricted">
@@ -157,7 +157,7 @@
       });
       setTimeout(()=>{
         const black = document.getElementById('blackout');
-        black.style.opacity = '1';
+        black.style.opacity = '1'; black.style.pointerEvents = 'auto';
         setTimeout(()=>{
           try { localStorage.setItem(LS_DESTROYED, '1'); } catch(e){}
         }, 1200);
