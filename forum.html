@@ -1,36 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Forum | The Organization</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="icon.png" />
   <style>
     /* Page tweaks to fit existing style.css without editing it */
-    main { max-width: 1100px; }
-    h1 { padding-top: 0; padding-bottom: 30px; font-size: 1.8rem; } /* smaller title */
-    .bar { position: sticky; top: 0; padding: 10px; background: #140000cc; backdrop-filter: blur(2px); z-index: 10; }
-    .bar .row { display:flex; gap:12px; align-items:center; }
-    .bar input[type="search"]{
-      flex:1; padding:10px; background:#200; border:1px solid #500; color:#fdd; font-family: serif;
+    main {
+      max-width: 1100px;
     }
-    .scrollbox { border:1px solid #400; }
-    .thead, .trow { display:grid; grid-template-columns: 1fr 50px 0.5fr 50px; gap:8px; }
-    .thead { padding:10px; border-bottom:1px solid #400; background:#1a0000; position: sticky; top: 58px; z-index: 5; }
+
+    h1 {
+      padding-top: 0;
+      padding-bottom: 30px;
+      font-size: 1.8rem;
+    }
+
+    /* smaller title */
+    .bar {
+      position: sticky;
+      top: 0;
+      padding: 10px;
+      background: #140000cc;
+      backdrop-filter: blur(2px);
+      z-index: 10;
+    }
+
+    .bar .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar input[type="search"] {
+      flex: 1;
+      padding: 10px;
+      background: #200;
+      border: 1px solid #500;
+      color: #fdd;
+      font-family: serif;
+    }
+
+    .scrollbox {
+      border: 1px solid #400;
+    }
+
+    .thead,
     .trow {
-      padding: 10px; padding-bottom: 20px; padding-top: 20px; border-bottom:1px solid #320000; background:#0f0000;
+      display: grid;
+      grid-template-columns: 1fr 50px 0.5fr 50px;
+      gap: 8px;
+    }
+
+    .thead {
+      padding: 10px;
+      border-bottom: 1px solid #400;
+      background: #1a0000;
+      position: sticky;
+      top: 58px;
+      z-index: 5;
+    }
+
+    .trow {
+      padding: 10px;
+      padding-bottom: 20px;
+      padding-top: 20px;
+      border-bottom: 1px solid #320000;
+      background: #0f0000;
       transition: background 120ms ease, transform 80ms ease;
       cursor: pointer;
     }
-    .trow:hover { background:#180000; transform: translateX(2px); }
-    .tmeta { padding:0 10px 10px 10px; color:#bbb; }
-    .tag { border:1px solid #433; padding:2px 6px; margin-right:6px; font-size:0.8rem; color:#e9c; }
-    .nowrap { white-space: nowrap; }
-    .muted { color:#b99; }
-    .widen .mission { padding: 14px; }
-    .btn { border:1px solid #533; background:#1b0000; padding:8px 12px; }
-    .hidden { display:none; }
+
+    .trow:hover {
+      background: #180000;
+      transform: translateX(2px);
+    }
+
+    .tmeta {
+      padding: 0 10px 10px 10px;
+      color: #bbb;
+    }
+
+    .tag {
+      border: 1px solid #433;
+      padding: 2px 6px;
+      margin-right: 6px;
+      font-size: 0.8rem;
+      color: #e9c;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .muted {
+      color: #b99;
+    }
+
+    .widen .mission {
+      padding: 14px;
+    }
+
+    .btn {
+      border: 1px solid #533;
+      background: #1b0000;
+      padding: 8px 12px;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
@@ -88,8 +170,7 @@
         </div>
         <label class="small" for="lockedText">Reply</label>
         <textarea id="lockedText" rows="4" placeholder="Replying disabled."
-                  style="width:100%; background:#100; color:#c99; border:1px solid #400; padding:8px;"
-                  disabled></textarea>
+          style="width:100%; background:#100; color:#c99; border:1px solid #400; padding:8px;" disabled></textarea>
         <div style="margin-top: 10px; display:flex; gap:8px;">
           <button class="btn" disabled>Post Reply</button>
           <span class="small">This forum is read-only. Contact an administrator to reopen.</span>
@@ -103,303 +184,323 @@
      * Editable Data (threads & posts)
      *****************************************/
     const FORUM_DATA = {
-            threads: [
-                {
-                id: "t-countdown-node9",
-                title: "Node 9 Countdown: final readiness checks",
-                createdBy: "Observer_Theta",
-                createdAt: "2025-11-04 08:10",
-                lastActivity: "2025-11-09 09:12",
-                views: 8421,
-                replies: 11,
-                tags: ["Operations", "Awakening"],
-                posts: [
-                    { user: "Observer_Theta", postedAt: "2025-11-04 08:10", body: "Calibration pass 31 cleared. Final sync in days." },
-                    { user: "echo", postedAt: "2025-11-04 13:22", body: "Drift under control. City noise low before dawn." },
-                    { user: "marcos.tech", postedAt: "2025-11-05 18:05", body: "IX telemetry shows all reading stable. Hold course." },
-                    { user: "kelly", postedAt: "2025-11-06 07:18", body: "Reminder: do not discuss public coordinates here." },
-                    { user: "hand_of_founder", postedAt: "2025-11-06 09:06", body: "Proceed." },
-                    { user: "miriam", postedAt: "2025-11-07 22:40", body: "Why did this take four years to align? I am tired." },
-                    { user: "fieldkit", postedAt: "2025-11-08 03:11", body: "No one really knows. Some claim it was \"The Chosen One\"." },
-                    { user: "Observer_Theta", postedAt: "2025-11-08 03:48", body: "Conspiracy. The Chosen One is a myth." },
-                    { user: "archivist", postedAt: "2025-11-08 21:33", body: "Note for record: Node 9 calibration initiated 2021-06-02. Delays recurring since 2023." },
-                    { user: "kelly", postedAt: "2025-11-09 06:02", body: "Night crew is working hard to maintain control." },
-                    { user: "Observer_Theta", postedAt: "2025-11-09 09:12", body: "Green across the board." }
-                ]
-            },
+      threads: [
+        {
+          id: "t-countdown-node9",
+          title: "Node 9 Countdown: final readiness checks",
+          createdBy: "Observer_Theta",
+          createdAt: "2025-11-04 08:10",
+          lastActivity: "2025-11-09 09:12",
+          views: 8421,
+          replies: 11,
+          tags: ["Operations", "Awakening"],
+          posts: [
+            { user: "Observer_Theta", postedAt: "2025-11-04 08:10", body: "Calibration pass 31 cleared. Final sync in days." },
+            { user: "echo", postedAt: "2025-11-04 13:22", body: "Drift under control. City noise low before dawn." },
+            { user: "marcos.tech", postedAt: "2025-11-05 18:05", body: "IX telemetry shows all reading stable. Hold course." },
+            { user: "kelly", postedAt: "2025-11-06 07:18", body: "Reminder: do not discuss public coordinates here." },
+            { user: "hand_of_founder", postedAt: "2025-11-06 09:06", body: "Proceed." },
+            { user: "miriam", postedAt: "2025-11-07 22:40", body: "Why did this take four years to align? I am tired." },
+            { user: "fieldkit", postedAt: "2025-11-08 03:11", body: "No one really knows. Some claim it was \"The Chosen One\"." },
+            { user: "Observer_Theta", postedAt: "2025-11-08 03:48", body: "Conspiracy. The Chosen One is a myth." },
+            { user: "archivist", postedAt: "2025-11-08 21:33", body: "Note for record: Node 9 calibration initiated 2021-06-02. Delays recurring since 2023." },
+            { user: "kelly", postedAt: "2025-11-09 06:02", body: "Night crew is working hard to maintain control." },
+            { user: "Observer_Theta", postedAt: "2025-11-09 09:12", body: "Green across the board." }
+          ]
+        },
 
-            {
-                id: "t-rumors-2019-2025",
-                title: "Rumors and sightings: compiled",
-                createdBy: "archivist",
-                createdAt: "2019-01-12 06:40",
-                lastActivity: "2025-11-04 22:12",
-                views: 10944,
-                replies: 12,
-                tags: ["Intelligence"],
-                posts: [
-                    { user: "archivist", postedAt: "2019-01-12 06:40", body: "Collect symbol sightings, pamphlets, recruitment whispers." },
-                    { user: "shadow_k", postedAt: "2019-03-02 00:12", body: "Found a group who says they've heard about The Organization" },
-                    { user: "courier44", postedAt: "2020-03-02 00:26", body: "\"The Organization\" is a generic term! They know nothing of our operations here, stupud." },
-                    { user: "anon82", postedAt: "2022-08-11 21:34", body: "Met someone who is waiting for a \"return\" event." },
-                    { user: "miriam", postedAt: "2024-02-14 12:02", body: "Found the symbol drawn in the corner of a map." },
-                    { user: "archivist", postedAt: "2025-09-10 10:51", body: "Consolidated artifacts into case file R-47." },
-                    { user: "hand_of_founder", postedAt: "2025-10-01 05:18", body: "Containment is priority. Avoid escalation." },
-                    { user: "fieldkit", postedAt: "2025-10-28 07:00", body: "New flyers: \"Wait. The Chosen One returns.\" Same hand as before. No one will believe it." },
-                    { user: "marcos.tech", postedAt: "2025-11-01 13:27", body: "Intercepted a phone call with potentially revealing information. Sent to IX." },
-                    { user: "courier44", postedAt: "2025-11-03 19:45", body: "Triangulation suggests the location of a covert operative." },
-                    { user: "archivist", postedAt: "2025-11-04 22:12", body: "Continuing monitoring. No public alarm." }
-                ]
-            },
+        {
+          id: "internal-access-code",
+          title: "Internal Access Code",
+          createdBy: "jason1",
+          createdAt: "2025-11-03 11:26",
+          lastActivity: "2025-11-07 12:14",
+          views: 4,
+          replies: 7,
+          tags: ["Administration", "Hidden"],
+          posts: [
+            { user: "jason1", postedAt: "2025-11-03 11:26", body: "What's this security code on internal access? I don't remember that being there before." },
+            { user: "kelly", postedAt: "2025-11-03 11:35", body: "Keep quiet. It can only be accessed by... well, you know. he will have to sum the mission codes." },
+            { user: "jason1", postedAt: "2025-11-03 11:36", body: "Who? The Founder?" },
+            { user: "kelly", postedAt: "2025-11-03 11:36", body: "no. the opposite." },
+            { user: "jason1", postedAt: "2025-11-03 11:36", body: "Are you saying The Chosen One has to add the 6 mission output codes together to form the security code?" },
+            { user: "miriam", postedAt: "2025-11-03 11:37", body: "hey. don't be so obvious. this has to stay a secret." },
+            { user: "miriam", postedAt: "2025-11-07 12:14", body: "I've deleted this entry from the main computers. We should be the only ones who can see this thread now." },
+          ]
+        },
 
-            {
-                id: "t-founder-bday",
-                title: "Founder status: birthday notice and schedule",
-                createdBy: "Admin",
-                createdAt: "2025-11-05 12:00",
-                lastActivity: "2025-11-06 12:14",
-                views: 1530,
-                replies: 4,
-                tags: ["Administration"],
-                posts: [
-                    { user: "Admin", postedAt: "2025-11-05 12:00", body: "Scheduling note. The Founder turns 16 on 11/06. Do not post greetings in operations channels." },
-                    { user: "kelly", postedAt: "2025-11-06 07:20", body: "Understood." },
-                    { user: "s_james", postedAt: "2025-11-06 09:02", body: "Happy birthday, Nivlac." },
-                    { user: "hand_of_founder", postedAt: "2025-11-06 12:14", body: "Acknowledge and return to work." }
-                ]
-            },
+        {
+          id: "t-founder-bday",
+          title: "Founder status: birthday notice and schedule",
+          createdBy: "Admin",
+          createdAt: "2025-11-05 12:00",
+          lastActivity: "2025-11-06 12:14",
+          views: 1530,
+          replies: 4,
+          tags: ["Administration"],
+          posts: [
+            { user: "Admin", postedAt: "2025-11-05 12:00", body: "Scheduling note. The Founder turns 16 on 11/06. Do not post greetings in operations channels." },
+            { user: "kelly", postedAt: "2025-11-06 07:20", body: "Understood." },
+            { user: "s_james", postedAt: "2025-11-06 09:02", body: "Happy birthday, Nivlac." },
+            { user: "hand_of_founder", postedAt: "2025-11-06 12:14", body: "Acknowledge and return to work." }
+          ]
+        },
 
-            {
-                id: "t-contact-protocols-2024-25",
-                title: "Contact protocols: dead drops only",
-                createdBy: "courier44",
-                createdAt: "2025-03-03 11:18",
-                lastActivity: "2025-10-30 16:12",
-                views: 3220,
-                replies: 5,
-                tags: ["Operations"],
-                posts: [
-                    { user: "courier44", postedAt: "2025-03-03 11:18", body: "Shift to dead drops only. Open-band messages reduced to logs." },
-                    { user: "marcos.tech", postedAt: "2025-03-03 12:30", body: "Use mapped relays in Glendora for temporary caches." },
-                    { user: "echo", postedAt: "2025-03-03 12:53", body: "Drop 3B relocated after civilian reports." },
-                    { user: "archivist", postedAt: "2025-03-05 09:41", body: "Records updated in PR index." },
-                    { user: "hand_of_founder", postedAt: "2025-10-30 16:12", body: "Follow the Directive without exception." }
-                ]
-            },
+        {
+          id: "t-rumors-2019-2025",
+          title: "Rumors and sightings: compiled",
+          createdBy: "archivist",
+          createdAt: "2019-01-12 06:40",
+          lastActivity: "2025-11-04 22:12",
+          views: 10944,
+          replies: 12,
+          tags: ["Intelligence"],
+          posts: [
+            { user: "archivist", postedAt: "2019-01-12 06:40", body: "Collect symbol sightings, pamphlets, recruitment whispers." },
+            { user: "shadow_k", postedAt: "2019-03-02 00:12", body: "Found a group who says they've heard about The Organization" },
+            { user: "courier44", postedAt: "2020-03-02 00:26", body: "\"The Organization\" is a generic term! They know nothing of our operations here, stupud." },
+            { user: "anon82", postedAt: "2022-08-11 21:34", body: "Met someone who is waiting for a \"return\" event." },
+            { user: "miriam", postedAt: "2024-02-14 12:02", body: "Found the symbol drawn in the corner of a map." },
+            { user: "archivist", postedAt: "2025-09-10 10:51", body: "Consolidated artifacts into case file R-47." },
+            { user: "hand_of_founder", postedAt: "2025-10-01 05:18", body: "Containment is priority. Avoid escalation." },
+            { user: "fieldkit", postedAt: "2025-10-28 07:00", body: "New flyers: \"Wait. The Chosen One returns.\" Same hand as before. No one will believe it." },
+            { user: "marcos.tech", postedAt: "2025-11-01 13:27", body: "Intercepted a phone call with potentially revealing information. Sent to IX." },
+            { user: "courier44", postedAt: "2025-11-03 19:45", body: "Triangulation suggests the location of a covert operative." },
+            { user: "archivist", postedAt: "2025-11-04 22:12", body: "Continuing monitoring. No public alarm." }
+          ]
+        },
 
-            {
-                id: "t-why-nine-so-slow",
-                title: "Why did Node 9 fight us for so long?",
-                createdBy: "kelly",
-                createdAt: "2025-9-29 10:44",
-                lastActivity: "2025-10-08 10:01",
-                views: 4988,
-                replies: 9,
-                tags: ["Operations", "Discussion"],
-                posts: [
-                    { user: "kelly", postedAt: "2025-9-29 10:44", body: "We began calibration in 2021. Eight nodes held. The last did not. I want to understand." },
-                    { user: "marcos.tech", postedAt: "2025-9-29 11:05", body: "The calibration sequence involves advanced energy conversions and precise harmonics. It is not a simple task." },
-                    { user: "fieldkit", postedAt: "2025-9-30 13:02", body: "You give a technical explination all you want, but the truth is, no one really knows." },
-                    { user: "archivist", postedAt: "2025-10-01 14:58", body: "Record shows three redesigns of the coupling array in 2022-2023." },
-                    { user: "miriam", postedAt: "2025-10-02 22:24", body: "People keep saying it is cursed. I know that is not helpful." },
-                    { user: "fieldkit", postedAt: "2025-10-06 18:30", body: "The last node is near a special house. The person living there is not ordinary." },
-                    { user: "anon82", postedAt: "2025-10-07 07:41", body: "626 Armstead Street, Azusa, California. Everyone knows but no one says it out loud." },
-                    { user: "hand_of_founder", postedAt: "2025-10-07 08:00", body: "Keep coordinates out of open posts." },
-                ]
-            },
+        {
+          id: "t-contact-protocols-2024-25",
+          title: "Contact protocols: dead drops only",
+          createdBy: "courier44",
+          createdAt: "2025-03-03 11:18",
+          lastActivity: "2025-10-30 16:12",
+          views: 3220,
+          replies: 5,
+          tags: ["Operations"],
+          posts: [
+            { user: "courier44", postedAt: "2025-03-03 11:18", body: "Shift to dead drops only. Open-band messages reduced to logs." },
+            { user: "marcos.tech", postedAt: "2025-03-03 12:30", body: "Use mapped relays in Glendora for temporary caches." },
+            { user: "echo", postedAt: "2025-03-03 12:53", body: "Drop 3B relocated after civilian reports." },
+            { user: "archivist", postedAt: "2025-03-05 09:41", body: "Records updated in PR index." },
+            { user: "hand_of_founder", postedAt: "2025-10-30 16:12", body: "Follow the Directive without exception." }
+          ]
+        },
 
-            {
-                id: "t-offtopic-sounds",
-                title: "Off-topic: the grid hum that makes you calm",
-                createdBy: "echo",
-                createdAt: "2025-02-14 21:03",
-                lastActivity: "2025-02-14 22:17",
-                views: 803,
-                replies: 3,
-                tags: ["Off-Topic"],
-                posts: [
-                    { user: "echo", postedAt: "2025-02-14 21:03", body: "When the grid hums just right, the world feels almost peaceful." },
-                    { user: "redline", postedAt: "2025-02-14 22:17", body: "Add a little city rain and you have a symphony." },
-                ]
-            },
+        {
+          id: "t-why-nine-so-slow",
+          title: "Why did Node 9 fight us for so long?",
+          createdBy: "kelly",
+          createdAt: "2025-9-29 10:44",
+          lastActivity: "2025-10-08 10:01",
+          views: 4988,
+          replies: 9,
+          tags: ["Operations", "Discussion"],
+          posts: [
+            { user: "kelly", postedAt: "2025-9-29 10:44", body: "We began calibration in 2021. Eight nodes held. The last did not. I want to understand." },
+            { user: "marcos.tech", postedAt: "2025-9-29 11:05", body: "The calibration sequence involves advanced energy conversions and precise harmonics. It is not a simple task." },
+            { user: "fieldkit", postedAt: "2025-9-30 13:02", body: "You give a technical explination all you want, but the truth is, no one really knows." },
+            { user: "archivist", postedAt: "2025-10-01 14:58", body: "Record shows three redesigns of the coupling array in 2022-2023." },
+            { user: "miriam", postedAt: "2025-10-02 22:24", body: "People keep saying it is cursed. I know that is not helpful." },
+            { user: "fieldkit", postedAt: "2025-10-06 18:30", body: "The last node is near a special house. The person living there is not ordinary." },
+            { user: "anon82", postedAt: "2025-10-07 07:41", body: "626 Armstead Street, Azusa, California. Everyone knows but no one says it out loud." },
+            { user: "hand_of_founder", postedAt: "2025-10-07 08:00", body: "Keep coordinates out of open posts." },
+          ]
+        },
 
-            {
-                id: "t-delay",
-                title: "Drift returns on Node 9",
-                createdBy: "echo",
-                createdAt: "2023-03-11 04:22",
-                lastActivity: "2023-07-11 09:03",
-                views: 1842,
-                replies: 7,
-                tags: ["Operations", "Awakening"],
-                posts: [
-                    { user: "echo", postedAt: "2023-03-11 04:22", body: "Division IX reports stable readings. Convergence slips at night." },
-                    { user: "redline", postedAt: "2023-03-11 05:01", body: "Probably a calibration fault. Re-run in off-peak grid hours." },
-                    { user: "archivist", postedAt: "2023-03-11 06:44", body: "Node 9 was always the outlier. Tolerance is extra thin." },
-                    { user: "echo", postedAt: "2023-03-12 08:10", body: "Harmonics spike at dawn. Check coupling with municipal gear." },
-                    { user: "operator_4", postedAt: "2023-07-10 22:19", body: "Silent mode reduced noise floor. Awaiting IX green light." },
-                    { user: "hand_of_founder", postedAt: "2023-07-11 08:51", body: "Proceed per Directive. No public disturbances." },
-                    { user: "echo", postedAt: "2023-07-11 09:03", body: "Copy. Standing by." }
-                ]
-            },
+        {
+          id: "t-offtopic-sounds",
+          title: "Off-topic: the grid hum that makes you calm",
+          createdBy: "echo",
+          createdAt: "2025-02-14 21:03",
+          lastActivity: "2025-02-14 22:17",
+          views: 803,
+          replies: 3,
+          tags: ["Off-Topic"],
+          posts: [
+            { user: "echo", postedAt: "2025-02-14 21:03", body: "When the grid hums just right, the world feels almost peaceful." },
+            { user: "redline", postedAt: "2025-02-14 22:17", body: "Add a little city rain and you have a symphony." },
+          ]
+        },
 
-            {
-                id: "t-people-we-miss",
-                title: "People we miss",
-                createdBy: "miriam",
-                createdAt: "2022-12-01 21:12",
-                lastActivity: "2022-12-24 07:59",
-                views: 680,
-                replies: 6,
-                tags: ["Personal"],
-                posts: [
-                    { user: "miriam", postedAt: "2022-12-01 21:12", body: "I light a candle for Arman and for Ana. Wish they were still here." },
-                    { user: "kelly", postedAt: "2022-12-02 06:40", body: "I miss my brother. I miss weekends." },
-                    { user: "janet", postedAt: "2022-12-15 12:01", body: "We don't choose this, but we have to live with it." },
-                    { user: "anon82", postedAt: "2022-12-18 02:15", body: "Don't let it consume you. We have to keep going. Stay strong." },
-                    { user: "marcos.tech", postedAt: "2022-12-22 17:33", body: "We are close to something large. Hold on." },
-                ]
-            },
+        {
+          id: "t-delay",
+          title: "Drift returns on Node 9",
+          createdBy: "echo",
+          createdAt: "2023-03-11 04:22",
+          lastActivity: "2023-07-11 09:03",
+          views: 1842,
+          replies: 7,
+          tags: ["Operations", "Awakening"],
+          posts: [
+            { user: "echo", postedAt: "2023-03-11 04:22", body: "Division IX reports stable readings. Convergence slips at night." },
+            { user: "redline", postedAt: "2023-03-11 05:01", body: "Probably a calibration fault. Re-run in off-peak grid hours." },
+            { user: "archivist", postedAt: "2023-03-11 06:44", body: "Node 9 was always the outlier. Tolerance is extra thin." },
+            { user: "echo", postedAt: "2023-03-12 08:10", body: "Harmonics spike at dawn. Check coupling with municipal gear." },
+            { user: "operator_4", postedAt: "2023-07-10 22:19", body: "Silent mode reduced noise floor. Awaiting IX green light." },
+            { user: "hand_of_founder", postedAt: "2023-07-11 08:51", body: "Proceed per Directive. No public disturbances." },
+            { user: "echo", postedAt: "2023-07-11 09:03", body: "Copy. Standing by." }
+          ]
+        },
 
-            {
-                id: "t-gridline",
-                title: "Calibration begins",
-                createdBy: "marcos.tech",
-                createdAt: "2021-06-02 07:00",
-                lastActivity: "2021-06-04 19:30",
-                views: 1022,
-                replies: 4,
-                tags: ["Operations", "Gridline"],
-                posts: [
-                    { user: "marcos.tech", postedAt: "2021-06-02 07:00", body: "Monument calibration started. Five nodes broadcast cleanly." },
-                    { user: "echo", postedAt: "2021-06-02 22:41", body: "Node 9 noisy. Logging for later." },
-                    { user: "archivist", postedAt: "2021-06-03 13:05", body: "Established baseline tolerances." },
-                    { user: "kelly", postedAt: "2021-06-04 19:30", body: "Work teams assigned in rotating shifts." }
-                ]
-            },
+        {
+          id: "t-people-we-miss",
+          title: "People we miss",
+          createdBy: "miriam",
+          createdAt: "2022-12-01 21:12",
+          lastActivity: "2022-12-24 07:59",
+          views: 680,
+          replies: 6,
+          tags: ["Personal"],
+          posts: [
+            { user: "miriam", postedAt: "2022-12-01 21:12", body: "I light a candle for Arman and for Ana. Wish they were still here." },
+            { user: "kelly", postedAt: "2022-12-02 06:40", body: "I miss my brother. I miss weekends." },
+            { user: "janet", postedAt: "2022-12-15 12:01", body: "We don't choose this, but we have to live with it." },
+            { user: "anon82", postedAt: "2022-12-18 02:15", body: "Don't let it consume you. We have to keep going. Stay strong." },
+            { user: "marcos.tech", postedAt: "2022-12-22 17:33", body: "We are close to something large. Hold on." },
+          ]
+        },
 
-            {
-                id: "t-quiet-hope",
-                title: "a rumor about a return",
-                createdBy: "jason1",
-                createdAt: "2019-09-09 03:14",
-                lastActivity: "2019-09-12 23:02",
-                views: 277,
-                replies: 3,
-                tags: ["Rumors"],
-                posts: [
-                    { user: "jason1", postedAt: "2019-09-09 03:14", body: "I heard someone say there will be a Chosen One. They seemed to have hope for the world." },
-                    { user: "miriam", postedAt: "2019-09-10 10:11", body: "We used to have stories like that at home. They made hard things bearable." },
-                    { user: "kelly", postedAt: "2019-09-12 23:02", body: "Keep it off operations threads." }
-                ]
-            },
+        {
+          id: "t-gridline",
+          title: "Calibration begins",
+          createdBy: "marcos.tech",
+          createdAt: "2021-06-02 07:00",
+          lastActivity: "2021-06-04 19:30",
+          views: 1022,
+          replies: 4,
+          tags: ["Operations", "Gridline"],
+          posts: [
+            { user: "marcos.tech", postedAt: "2021-06-02 07:00", body: "Monument calibration started. Five nodes broadcast cleanly." },
+            { user: "echo", postedAt: "2021-06-02 22:41", body: "Node 9 noisy. Logging for later." },
+            { user: "archivist", postedAt: "2021-06-03 13:05", body: "Established baseline tolerances." },
+            { user: "kelly", postedAt: "2021-06-04 19:30", body: "Work teams assigned in rotating shifts." }
+          ]
+        },
 
-            {
-                id: "t-internal-audit",
-                title: "Internal audit: ledger discrepancies",
-                createdBy: "archivist",
-                createdAt: "2018-10-12 09:00",
-                lastActivity: "2018-10-12 16:45",
-                views: 211,
-                replies: 2,
-                tags: ["Administration"],
-                posts: [
-                    { user: "archivist", postedAt: "2018-10-12 09:00", body: "Two discrepancies in equipment ledgers. Resolved with cross-checks." },
-                    { user: "hand_of_founder", postedAt: "2018-10-12 16:45", body: "File sealed." }
-                ]
-            },
+        {
+          id: "t-quiet-hope",
+          title: "a rumor about a return",
+          createdBy: "jason1",
+          createdAt: "2019-09-09 03:14",
+          lastActivity: "2019-09-12 23:02",
+          views: 277,
+          replies: 3,
+          tags: ["Rumors"],
+          posts: [
+            { user: "jason1", postedAt: "2019-09-09 03:14", body: "I heard someone say there will be a Chosen One. They seemed to have hope for the world." },
+            { user: "miriam", postedAt: "2019-09-10 10:11", body: "We used to have stories like that at home. They made hard things bearable." },
+            { user: "kelly", postedAt: "2019-09-12 23:02", body: "Keep it off operations threads." }
+          ]
+        },
 
-            {
-                id: "t-ethics",
-                title: "discussion: this work feels wrong",
-                createdBy: "s_james",
-                createdAt: "2018-02-02 08:02",
-                lastActivity: "2018-03-10 18:41",
-                views: 404,
-                replies: 5,
-                tags: ["Discussion"],
-                posts: [
-                    { user: "s_james", postedAt: "2018-02-02 08:02", body: "Routine is so repetitive, I'm losing my mind. Does anyone else feel it?" },
-                    { user: "kelly", postedAt: "2018-02-05 11:55", body: "I dream of the same hallway every night." },
-                    { user: "s_james", postedAt: "2018-02-06 08:15", body: "What we're doing here is unethical." },
-                    { user: "miriam", postedAt: "2018-02-19 06:00", body: "Someone I cared for left and never wrote." },
-                    { user: "marcos", postedAt: "2018-03-01 20:12", body: "The Founder says the world needs us. I do not question it. I follow." },
-                    { user: "anon82", postedAt: "2018-03-10 18:41", body: "I question it." }
-                ]
-            },
+        {
+          id: "t-internal-audit",
+          title: "Internal audit: ledger discrepancies",
+          createdBy: "archivist",
+          createdAt: "2018-10-12 09:00",
+          lastActivity: "2018-10-12 16:45",
+          views: 211,
+          replies: 2,
+          tags: ["Administration"],
+          posts: [
+            { user: "archivist", postedAt: "2018-10-12 09:00", body: "Two discrepancies in equipment ledgers. Resolved with cross-checks." },
+            { user: "hand_of_founder", postedAt: "2018-10-12 16:45", body: "File sealed." }
+          ]
+        },
 
-            {
-                id: "t-missing-2017",
-                title: "Missing: where did Arman go",
-                createdBy: "kelly",
-                createdAt: "2017-05-14 12:25",
-                lastActivity: "2017-06-01 06:44",
-                views: 321,
-                replies: 6,
-                tags: ["Personnel", "Sensitive"],
-                posts: [
-                    { user: "kelly", postedAt: "2017-05-14 12:25", body: "Arman has not checked in. Does anyone know what he's doing?" },
-                    { user: "marcos", postedAt: "2017-05-14 12:39", body: "He talked about leaving. He missed his sister." },
-                    { user: "archivist", postedAt: "2017-05-15 09:10", body: "Opened a file. No public details." },
-                    { user: "anon", postedAt: "2017-05-20 01:01", body: "They don't let people out. He probably didn't get very far." },
-                    { user: "miriam", postedAt: "2017-05-23 22:18", body: "I still have his tool roll. I will keep it." },
-                    { user: "Admin", postedAt: "2017-06-01 06:44", body: "Thread locked." }
-                ]
-            },
+        {
+          id: "t-ethics",
+          title: "discussion: this work feels wrong",
+          createdBy: "s_james",
+          createdAt: "2018-02-02 08:02",
+          lastActivity: "2018-03-10 18:41",
+          views: 404,
+          replies: 5,
+          tags: ["Discussion"],
+          posts: [
+            { user: "s_james", postedAt: "2018-02-02 08:02", body: "Routine is so repetitive, I'm losing my mind. Does anyone else feel it?" },
+            { user: "kelly", postedAt: "2018-02-05 11:55", body: "I dream of the same hallway every night." },
+            { user: "s_james", postedAt: "2018-02-06 08:15", body: "What we're doing here is unethical." },
+            { user: "miriam", postedAt: "2018-02-19 06:00", body: "Someone I cared for left and never wrote." },
+            { user: "marcos", postedAt: "2018-03-01 20:12", body: "The Founder says the world needs us. I do not question it. I follow." },
+            { user: "anon82", postedAt: "2018-03-10 18:41", body: "I question it." }
+          ]
+        },
 
-            {
-                id: "t-we-answer-to-a-child-2016",
-                title: "We answer to a child?",
-                createdBy: "s_james",
-                createdAt: "2016-06-21 08:09",
-                lastActivity: "2016-06-22 19:10",
-                views: 265,
-                replies: 4,
-                tags: ["Culture"],
-                posts: [
-                    { user: "s_james", postedAt: "2016-06-21 08:09", body: "I cannot believe we are being ordered around by a six year old." },
-                    { user: "marcos", postedAt: "2016-06-21 08:27", body: "That is just how it is. He is ahead of his age." },
-                    { user: "kelly", postedAt: "2016-06-21 09:11", body: "Do your job. Nivlac sees farther than we do." },
-                    { user: "Admin", postedAt: "2016-06-22 19:10", body: "Stay on task." }
-                ]
-            },
+        {
+          id: "t-missing-2017",
+          title: "Missing: where did Arman go",
+          createdBy: "kelly",
+          createdAt: "2017-05-14 12:25",
+          lastActivity: "2017-06-01 06:44",
+          views: 321,
+          replies: 6,
+          tags: ["Personnel", "Sensitive"],
+          posts: [
+            { user: "kelly", postedAt: "2017-05-14 12:25", body: "Arman has not checked in. Does anyone know what he's doing?" },
+            { user: "marcos", postedAt: "2017-05-14 12:39", body: "He talked about leaving. He missed his sister." },
+            { user: "archivist", postedAt: "2017-05-15 09:10", body: "Opened a file. No public details." },
+            { user: "anon", postedAt: "2017-05-20 01:01", body: "They don't let people out. He probably didn't get very far." },
+            { user: "miriam", postedAt: "2017-05-23 22:18", body: "I still have his tool roll. I will keep it." },
+            { user: "Admin", postedAt: "2017-06-01 06:44", body: "Thread locked." }
+          ]
+        },
 
-            {
-                id: "t-first-traces-2016",
-                title: "restless thoughts",
-                createdBy: "jason1",
-                createdAt: "2016-11-02 00:33",
-                lastActivity: "2016-11-07 07:20",
-                views: 189,
-                replies: 4,
-                tags: ["Personnel"],
-                posts: [
-                    { user: "jason1", postedAt: "2016-11-02 00:33", body: "Some of the things we do feel wrong. We have to do something." },
-                    { user: "miriam", postedAt: "2016-11-02 01:12", body: "You are not alone. But keep your head down." },
-                    { user: "jason1", postedAt: "2016-11-06 23:59", body: "I have an idea. We might be able to plant a fault. Miriam, do you have access to the main comuter?" },
-                    { user: "miriam", postedAt: "2016-11-06 00:4", body: "It's risky, but I might be able to get something started. I can't do this alone." },
-                    { user: "janet", postedAt: "2016-11-07 07:20", body: "Do not write about this." }
-                ]
-            },
+        {
+          id: "t-we-answer-to-a-child-2016",
+          title: "We answer to a child?",
+          createdBy: "s_james",
+          createdAt: "2016-06-21 08:09",
+          lastActivity: "2016-06-22 19:10",
+          views: 265,
+          replies: 4,
+          tags: ["Culture"],
+          posts: [
+            { user: "s_james", postedAt: "2016-06-21 08:09", body: "I cannot believe we are being ordered around by a six year old." },
+            { user: "marcos", postedAt: "2016-06-21 08:27", body: "That is just how it is. He is ahead of his age." },
+            { user: "kelly", postedAt: "2016-06-21 09:11", body: "Do your job. Nivlac sees farther than we do." },
+            { user: "Admin", postedAt: "2016-06-22 19:10", body: "Stay on task." }
+          ]
+        },
 
-            {
-                id: "t-internal-whispers-2016",
-                title: "So what are we even doing here",
-                createdBy: "janet",
-                createdAt: "2016-03-18 22:07",
-                lastActivity: "2016-04-12 08:50",
-                views: 212,
-                replies: 5,
-                tags: ["Culture", "Early Years"],
-                posts: [
-                    { user: "janet", postedAt: "2016-03-18 22:07", body: "We file notes. We move crates. We keep quiet. Is there an end to this?" },
-                    { user: "s_james", postedAt: "2016-03-19 09:14", body: "The Founder is a child. Six. Are we really following a kid." },
-                    { user: "marcos", postedAt: "2016-03-19 09:40", body: "You have not seen him think. His mathematics go way over my head." },
-                    { user: "kelly", postedAt: "2016-04-01 17:02", body: "Someone keeps talking about a plan to fix the world. I see no hope." }
-                ]
-            }
-            ]
-        };
+        {
+          id: "t-first-traces-2016",
+          title: "restless thoughts",
+          createdBy: "jason1",
+          createdAt: "2016-11-02 00:33",
+          lastActivity: "2016-11-07 07:20",
+          views: 189,
+          replies: 4,
+          tags: ["Personnel"],
+          posts: [
+            { user: "jason1", postedAt: "2016-11-02 00:33", body: "Some of the things we do feel wrong. We have to do something." },
+            { user: "miriam", postedAt: "2016-11-02 01:12", body: "You are not alone. But keep your head down." },
+            { user: "jason1", postedAt: "2016-11-06 23:59", body: "I have an idea. We might be able to plant a fault. Miriam, do you have access to the main comuter?" },
+            { user: "miriam", postedAt: "2016-11-06 00:4", body: "It's risky, but I might be able to get something started. I can't do this alone." },
+            { user: "janet", postedAt: "2016-11-07 07:20", body: "Do not write about this." }
+          ]
+        },
+
+        {
+          id: "t-internal-whispers-2016",
+          title: "So what are we even doing here",
+          createdBy: "janet",
+          createdAt: "2016-03-18 22:07",
+          lastActivity: "2016-04-12 08:50",
+          views: 212,
+          replies: 5,
+          tags: ["Culture", "Early Years"],
+          posts: [
+            { user: "janet", postedAt: "2016-03-18 22:07", body: "We file notes. We move crates. We keep quiet. Is there an end to this?" },
+            { user: "s_james", postedAt: "2016-03-19 09:14", body: "The Founder is a child. Six. Are we really following a kid." },
+            { user: "marcos", postedAt: "2016-03-19 09:40", body: "You have not seen him think. His mathematics go way over my head." },
+            { user: "kelly", postedAt: "2016-04-01 17:02", body: "Someone keeps talking about a plan to fix the world. I see no hope." }
+          ]
+        }
+      ]
+    };
 
     /*****************************************
      * Utilities
@@ -422,16 +523,16 @@
       const then = new Date(dateStr.replace(' ', 'T'));
       if (isNaN(then)) return '';
       const ms = now - then;
-      const day = 24*60*60*1000;
+      const day = 24 * 60 * 60 * 1000;
       const days = Math.max(0, Math.floor(ms / day));
       if (days >= 365) {
         const years = Math.floor(days / 365);
-        return ` (${years} year${years!==1?'s':''} ago)`;
+        return ` (${years} year${years !== 1 ? 's' : ''} ago)`;
       } else if (days >= 30) {
         const months = Math.floor(days / 30);
-        return ` (${months} month${months!==1?'s':''} ago)`;
+        return ` (${months} month${months !== 1 ? 's' : ''} ago)`;
       } else {
-        return ` (${days} day${days!==1?'s':''} ago)`;
+        return ` (${days} day${days !== 1 ? 's' : ''} ago)`;
       }
     }
 
@@ -576,4 +677,5 @@
     });
   </script>
 </body>
+
 </html>
