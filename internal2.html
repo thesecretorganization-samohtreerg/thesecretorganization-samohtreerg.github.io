@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Internal Access 2 | The Organization</title>
+  <script defer src="org-state.js"></script>
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="style.css">
   <style>
@@ -29,6 +30,21 @@
         repeating-linear-gradient(0deg, transparent 0 220px, #f00 220px 222px); }
     .stamp { display: inline-block; border: 1px solid #a00; color: #faa; padding: 2px 6px; font-weight: 700; background: rgba(255,0,0,0.08); border-radius: 4px; font-size: 12px; }
     .note { color: rgba(255,255,255,0.65); }
+
+    /* Countdown and glitch visuals */
+    .overlay { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.7); z-index: 10000; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: center; }
+    .overlay.hidden { display: none; }
+    .overlay .clock { font-size: 3rem; letter-spacing: 0.08em; }
+    .overlay .sub { opacity: .8; margin-top: .5rem; }
+    .glitch { animation: shake .15s infinite alternate; filter: hue-rotate(10deg) contrast(1.2) saturate(1.1); }
+    @keyframes shake { from { transform: translate(-1px, 0); } to { transform: translate(1px, 0); } }
+    .static::before { content: ""; position: absolute; inset: 0; background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px),
+        repeating-linear-gradient(90deg, rgba(255,0,0,0.03) 0 3px, transparent 3px 6px);
+        mix-blend-mode: screen; pointer-events: none; }
+
+    /* Final blackout */
+    .blackout { position: fixed; inset: 0; background: #000; z-index: 2147483000; opacity: 0; transition: opacity 1.2s ease; }
   </style>
 </head>
 <body class="restricted">
@@ -61,11 +77,18 @@
       </div>
     </section>
   </main>
+  <div id="overlay" class="overlay hidden">
+    <div>
+      <div class="clock" id="clock">15</div>
+      <div class="sub">SECURITY OVERRIDE IN PROGRESS</div>
+    </div>
+  </div>
+  <div id="blackout" class="blackout"></div>
 
   <script>
     // Replace with the real mission code from the box
     const EXPECTED_CODE = 'C#F%8Y';
-    const LS_KEY2 = 'org_internal2_code_ok_v1';
+    const LS_DESTROYED = 'org_destroyed';
 
     const inp = document.getElementById('code');
     const btn = document.getElementById('submit');
@@ -73,17 +96,72 @@
     const reveal = document.getElementById('reveal');
 
     function allow() {
-      localStorage.setItem(LS_KEY2, 'ok');
       msg.textContent = 'Accepted';
       msg.classList.add('ok');
       reveal.classList.remove('hidden');
+      beginCountdown();
     }
 
-    function restore() {
-      try {
-        const v = localStorage.getItem(LS_KEY2);
-        if (v === 'ok') allow();
-      } catch(e){}
+    function restore() {}
+
+    function disableNavigation(){
+      document.querySelectorAll('a, button').forEach(el => {
+        if (el.id === 'submit') return;
+        el.setAttribute('disabled','true');
+        el.addEventListener('click', ev => ev.preventDefault(), { capture: true });
+      });
+    }
+
+    function beginCountdown(){
+      disableNavigation();
+      const overlay = document.getElementById('overlay');
+      const clock = document.getElementById('clock');
+      overlay.classList.remove('hidden');
+      overlay.classList.add('static');
+      let t = 15;
+      (document.getElementById('timer')||{}).textContent = String(t);
+      clock.textContent = String(t);
+      const iv = setInterval(()=>{
+        t--; (document.getElementById('timer')||{}).textContent = String(t);
+        clock.textContent = String(t);
+        overlay.classList.toggle('glitch');
+        if (t <= 0){ clearInterval(iv); startCollapse(); }
+      }, 1000);
+    }
+
+    function startCollapse(){
+      const overlay = document.getElementById('overlay');
+      overlay.querySelector('.sub').textContent = 'OVERRIDE COMPLETE';
+      overlay.classList.add('glitch');
+      const cx = window.innerWidth/2, cy = window.innerHeight/2;
+      const targets = Array.from(document.querySelectorAll('nav, .banner, main'));
+      targets.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const dx = cx - (r.left + r.width/2);
+        const dy = cy - (r.top + r.height/2);
+        el.style.position = 'fixed';
+        el.style.left = r.left + 'px';
+        el.style.top = r.top + 'px';
+        el.style.width = r.width + 'px';
+        el.style.height = r.height + 'px';
+        el.style.margin = '0';
+        el.style.zIndex = 9999;
+        const dur = 2000 + Math.random()*1200;
+        el.animate([
+          { transform: 'translate(0,0) scale(1) rotate(0deg)', filter: 'none' },
+          { transform: `translate(${dx*0.5}px, ${dy*0.5}px) rotate(180deg) scale(0.7)`, filter: 'hue-rotate(45deg) contrast(1.4)' },
+          { transform: `translate(${dx}px, ${dy}px) rotate(720deg) scale(0.01)` , filter: 'hue-rotate(120deg) contrast(1.8) saturate(1.4)' }
+        ], { duration: dur, easing: 'cubic-bezier(.2,.6,.2,1)' }).onfinish = () => {
+          el.remove();
+        };
+      });
+      setTimeout(()=>{
+        const black = document.getElementById('blackout');
+        black.style.opacity = '1';
+        setTimeout(()=>{
+          try { localStorage.setItem(LS_DESTROYED, '1'); } catch(e){}
+        }, 1200);
+      }, 2600);
     }
 
     btn.addEventListener('click', () => {
