@@ -123,6 +123,17 @@ nav.multipart>*{
     justify-content: right;
 }
 
+@media (max-width: 940px) {
+    .nav-center {
+        display: none !important;
+        width: 0 !important;
+    }
+
+    .nav-start {
+        flex: auto !important;
+    }
+}
+
 nav a {
     color: var(--color-accent-dark);
     text-decoration: none;
