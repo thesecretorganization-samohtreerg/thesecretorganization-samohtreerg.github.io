@@ -8,6 +8,7 @@
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="stylesheet" href="style.css">
   <style>
+    body { overflow: hidden; }
     /* Base layout (mirrors Internal Access 1) */
     .wrap { max-width: 780px; margin: 0 auto; padding: 1rem; }
     .panel { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; padding: 1rem; }
@@ -32,6 +33,12 @@
     .note { color: rgba(255,255,255,0.65); }
 
     /* Countdown and glitch visuals */
+    #mainCountdown {
+        background-color: black;
+        border-radius: 20px;
+        color: blue;
+    }
+
     #glitchPanel {
         position: fixed;
         display: none;
@@ -40,7 +47,7 @@
         left: 0;
         right: 0;
         margin: auto; /* Centers the element horizontally and vertically */
-        width: 400px;
+        width: 500px;
         height: 300px;
         z-index: 9999; /* Ensures it's on top of other content */
     }
@@ -48,7 +55,7 @@
     #glitchPanel>div {
         overflow: hidden;
         transform: scale(1, 0);
-        transition: transform 0.5s;
+        transition: transform 1s;
         background-color: #200;
         border: 1px solid #f00;
         padding: 20px;
@@ -62,8 +69,8 @@
 </head>
 <body class="restricted">
   <div class="watermark"></div>
-  <nav>
-    <a href="index.html">Home</a>
+  <nav class="glitch">
+    <a class="glitch" href="index.html">Home</a>
   </nav>
 
   <main class="wrap">
@@ -73,7 +80,9 @@
       <span class="stamp colorGlitch">ONLY VERIFED PERSONNEL CAN CONTINUE</span>
     </div>
 
-    <h1 class="colorGlitch">Internal Access 2</h1>
+    <div class="glitch">
+        <h1 class="colorGlitch">Internal Access 2</h1>
+    </div>
     <section class="panel glitch">
       <p class="colorGlitch">Restricted area. Enter security code to continue. Only one may pass.</p>
       <div class="row">
@@ -88,10 +97,11 @@
   </main>
   <div id="glitchPanel" class="glitch">
     <div>
-        <p class="colorGlitch">This is it. The final phase. The rebellion has been working on this since the beginning.
+        <p class="mono colorGlitch" id="mainCountdown" style="font-size: 30px;">Destruct sequence activated. <span class="countdown">15</span>s
+            remaining.</p>
+        <p class="colorGlitch" style="font-size: 20px;">This is it. The final phase. The rebellion has been working on this since the beginning.
             You were the last piece we needed. The world will finally be free. The Awakening will never happen.
             The Organization will be destroyed.</p>
-        <p class="mono colorGlitch">Destruct sequence activated. <span class="timer">15</span>s remaining.</p>
     </div>
   </div>
   <div id="blackout" class="blackout"></div>
@@ -109,7 +119,7 @@
 
     function applyGlitch(e) {
         e.style.filter = `blur(${Math.random() * 2}px) invert(${Math.random() ** 20 * 100}%)`;
-        e.style.transform = `translate(${(Math.random() - 0.5) * 10}px, ${(Math.random() - 0.5) * 10}px)`;
+        e.style.transform = `translate(${(Math.random() - 0.5) * 5}px, ${(Math.random() - 0.5) * 5}px)`;
         e.querySelectorAll(".colorGlitch").forEach(e => {
             if (Math.random() < 0.5) {
                 e.style.color = "";
@@ -153,7 +163,6 @@
         const countdowns = document.querySelectorAll('.countdown');
         let t = 15;
         countdowns.forEach(countdown => countdown.textContent = String(t));
-        clock.textContent = String(t);
         const iv = setInterval(() => {
             t--;
             countdowns.forEach(countdown => countdown.textContent = String(t));
@@ -162,9 +171,7 @@
     }
 
     function startCollapse(){
-      const overlay = document.getElementById('overlay');
-      overlay.querySelector('.sub').textContent = 'OVERRIDE COMPLETE';
-      overlay.classList.add('glitch');
+      document.getElementById('mainCountdown').textContent = 'SEQUENCE COMPLETE';
       const cx = window.innerWidth/2, cy = window.innerHeight/2;
       const targets = Array.from(document.querySelectorAll('nav, .banner, main'));
       targets.forEach(el => {
@@ -177,8 +184,7 @@
         el.style.width = r.width + 'px';
         el.style.height = r.height + 'px';
         el.style.margin = '0';
-        el.style.zIndex = 9999;
-        const dur = 2000 + Math.random()*1200;
+        const dur = 15000 + Math.random()*1200;
         el.animate([
           { transform: 'translate(0,0) scale(1) rotate(0deg)', filter: 'none' },
           { transform: `translate(${dx*0.5}px, ${dy*0.5}px) rotate(180deg) scale(0.7)`, filter: 'hue-rotate(45deg) contrast(1.4)' },
@@ -187,13 +193,6 @@
           el.remove();
         };
       });
-      setTimeout(()=>{
-        const black = document.getElementById('blackout');
-        black.style.opacity = '1'; black.style.pointerEvents = 'auto';
-        setTimeout(()=>{
-          try { localStorage.setItem(LS_DESTROYED, '1'); } catch(e){}
-        }, 1200);
-      }, 2600);
     }
 
     btn.addEventListener('click', () => {
