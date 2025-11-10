@@ -87,17 +87,15 @@
     }
 
     async function callModel(prompt){
-      const key = OPENAI_API_KEY.trim();
-      if (!key) return null;
       try {
         // Responses API with stored Prompt ID and conversation memory
         const body = { model: MODEL, input: String(prompt), prompt: { id: PROMPT_ID, version: 1 } };
         if (typeof conversationId === 'string') body.conversation = conversationId;
-        console.log(body); // TODO: Fix
+        console.log(JSON.stringify(body)); // TODO: Fix
 
         const res = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_API_KEY },
           body: JSON.stringify(body)
         });
         if (res.ok) {
