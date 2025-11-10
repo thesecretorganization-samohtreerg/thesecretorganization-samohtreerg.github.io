@@ -35,13 +35,14 @@
     <section class="panel">
       <div class="controls">
                 <span id="conn" class="hint">Connecting...</span>
-        <button id="scramble" class="btn" style="display:none;">Scramble User ID</button>
+        <button id="scramble" class="btn">Scramble User ID</button>
       </div>
       <div class="hint" style="margin-bottom:0.25rem;">Messages remaining: <span id="left">10</span>/10</div>
       <div class="bar"><span id="dataBar"></span></div>
       <div id="log" class="chat" style="margin-top:0.6rem;"></div>
       <div class="row"><input id="inp" placeholder="Message" maxlength="40" disabled/><button id="send" class="btn" disabled>Send</button></div>
-      <p class="hint" style="margin-top:0.5rem;">Maintain control of the exchange. Recover the mission code.</p>
+      <p class="hint" style="margin-top:0.5rem;">Recover the mission code.</p>
+      <p class="hint">If responses seem strange, it could be because someone intercepted the connection and modified them.</p>
     </section>
   </main>
   <script>
@@ -73,17 +74,14 @@
     // System prompt removed from source — using PROMPT_ID via Responses API
 
     function startSession(){
-      if (!OPENAI_API_KEY) { connEl.textContent = 'Disconnected from server'; sys('No connection.'); return; }
       connected = true; setRemaining(MAX_MSGS);
-      log.innerHTML = '';
-      sys('Channel masked. Routing unknown.');
-      them('Identify.');
-      inp.disabled = false; send.disabled = false; scrambleBtn.style.display='inline-block'; connEl.textContent = 'Connected';
+      sys('Connection initiated.');
+      setTimeout(() => them('Identify.'), 500);
+      inp.disabled = false; send.disabled = false; connEl.textContent = 'Connected';
     }
 
-    function endSession(scrambleNote=true){
-      connected = false; inp.disabled = true; send.disabled = true; scrambleBtn.style.display='none'; connEl.textContent = OPENAI_API_KEY ? 'Ready' : 'Disconnected from server';
-      if (scrambleNote) sys('Connection terminated. User id scrambled.');
+    function endSession(){
+      connected = false; previousResponseId = undefined; inp.disabled = true; send.disabled = true; connEl.textContent = 'Ready';
       setRemaining(MAX_MSGS);
     }
 
@@ -93,6 +91,7 @@
         const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }], prompt: { id: PROMPT_ID } };
         if (previousResponseId !== undefined) body.previous_response_id = previousResponseId;
 
+        console.log('Request:', body);
         const res = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_API_KEY },
@@ -100,7 +99,7 @@
         });
         if (res.ok) {
           const data = await res.json();
-          console.log(data);
+          console.log('Response:', data);
           previousResponseId = data.id;
           const text = data.output[0].content[0].text;
           return text;
@@ -120,8 +119,8 @@
       them(reply);
       // Allow Nivlac to terminate via message content
       const lower = reply.toLowerCase();
-      if (lower === 'connection terminated') {
-        endSession(false);
+      if (lower.includes('connection terminated')) {
+        endSession();
       }
     }
 
@@ -129,13 +128,13 @@
     // Auto-connect on load
     window.addEventListener('DOMContentLoaded', startSession);
     // Scramble button resets the session
-    scrambleBtn.addEventListener('click', ()=>{ endSession(true); startSession(); });
+    scrambleBtn.addEventListener('click', ()=>{ log.innerHTML = ''; if (connected) endSession(); startSession(); });
     send.addEventListener('click', sendUser);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter') send.click(); });
 
     // Initialize
     setRemaining(MAX_MSGS);
-    connEl.textContent = OPENAI_API_KEY ? 'Ready' : 'Disconnected from server';
+    connEl.textContent = 'Ready';
   </script>
 </body>
 </html>
