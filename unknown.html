@@ -61,7 +61,7 @@
     const MAX_MSGS = 10; // user messages per session
     let remaining = MAX_MSGS;
     let connected = false;
-    let conversationId;
+    let previousResponseId;
 
     function setRemaining(n){ remaining = Math.max(0, Math.min(MAX_MSGS, n)); const pct = (remaining / MAX_MSGS) * 100; dataBar.style.width = pct + '%'; leftEl.textContent = String(remaining); }
     function add(cls, text){ const d=document.createElement('div'); d.className='msg '+cls; d.textContent=text; log.appendChild(d); log.scrollTop = log.scrollHeight; }
@@ -89,9 +89,8 @@
     async function callModel(prompt){
       try {
         // Responses API with stored Prompt ID and conversation memory
-        // TODO: make the conversation store memory.
         const body = { model: MODEL, input: [{ role: 'user', content: String(prompt) }], prompt: { id: PROMPT_ID, version: '1' } };
-        // if (typeof conversationId === 'string') body.conversation = conversationId;
+        if (previousResponseId !== undefined) body.previous_response_id = previousResponseId;
 
         const res = await fetch('https://api.openai.com/v1/responses', {
           method: 'POST',
@@ -101,8 +100,7 @@
         if (res.ok) {
           const data = await res.json();
           console.log(data);
-          // if (data.conversation.id) conversationId = data.conversation.id; // TODO: Sanitize
-          // else if (data?.conversation_id) conversationId = data.conversation_id;
+          previousResponseId = data.id;
           const text = data.output[1].content[0].text;
           return text;
         }
