@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="style.css">
   <style>
     body { overflow: hidden; height: 100vh; filter: url('#liquify'); }
+    @supports (-webkit-hyphens:none) and (not (filter:url(#liquify))) {
+        body { filter: none !important; }
+    }
     #page { height: 100vh; position: relative; }
     /* Base layout (mirrors Internal Access 1) */
     .wrap { max-width: 780px; margin: 0 auto; padding: 1rem; }
@@ -202,7 +205,7 @@
         document.write('');
         document.close();
         document.body.style.backgroundColor = '#000';
-      }, 8000);
+      }, 10000);
     }
 
     btn.addEventListener('click', () => {
