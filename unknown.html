@@ -40,14 +40,12 @@
       <div class="hint" style="margin-bottom:0.25rem;">Messages remaining: <span id="left">10</span>/10</div>
       <div class="bar"><span id="dataBar"></span></div>
       <div id="log" class="chat" style="margin-top:0.6rem;"></div>
-      <div class="row"><input id="inp" placeholder="Message" maxlength="40" disabled/><button id="send" class="btn" disabled>Send</button></div>
+      <div class="row"><input id="inp" placeholder="Message" maxlength="400" disabled/><button id="send" class="btn" disabled>Send</button></div>
       <p class="hint" style="margin-top:0.5rem;">Recover the mission code.</p>
       <p class="hint">If responses seem strange, it could be because someone intercepted the connection and modified them.</p>
     </section>
   </main>
   <script>
-    // Config: include API key here (temporary project)
-    const OPENAI_API_KEY = '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';
     const MODEL = 'gpt-4.1-nano';
     const PROMPT_ID = 'pmpt_6911233f7bb88197894848bfb4305eef073c39e11439c848';
 
@@ -92,7 +90,7 @@
         if (previousResponseId !== undefined) body.previous_response_id = previousResponseId;
 
         console.log('Request:', body);
-        const res = await fetch('https://api.openai.com/v1/responses', {
+        const res = await fetch('/.netlify/functions/openai-proxy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + OPENAI_API_KEY },
           body: JSON.stringify(body)
