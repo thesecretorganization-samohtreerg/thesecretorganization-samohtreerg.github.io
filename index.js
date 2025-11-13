@@ -47,7 +47,7 @@ icons.forEach(icon => {
 });
 
 // Countdown timer to the "Event"
-const countdownDate = new Date('2025-11-10').getTime(); // change as needed
+const countdownDate = new Date('2025-11-17').getTime(); // change as needed
 const timerElelements = document.querySelectorAll('.timer');
 
 const updateTimer = () => {
